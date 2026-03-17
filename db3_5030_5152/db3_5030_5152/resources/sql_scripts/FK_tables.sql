@@ -55,13 +55,27 @@ CREATE journal_rankings {
 };
 
 CREATE TABLE conference_rankings {
+    conference_ID INT NOT NULL,
     conf_ID INT NOT NULL,
     title VARCHAR(100),
     rank INT,
     primaryFoR INT NOT NULL,
 };
 
+
+CREATE TABLE primaryFoRs {
+    conf_ID INT NOT NULL,
+    /*CSE convert to Int*/
+    primaryFor INT NOT NULL,
+    PRIMARY KEY (conf_ID, primaryFor),
+    FOREIGN KEY (conf_ID) REFERENCES conference_rankings(conf_ID)
+    ON DELETE CASCADE ON UPDATE CASCADE
+};
+
+
+
 CREATE TABLE conference_categories {
-
-
+    primaryFor INT NOT NULL,
+    category_name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (category_name)
 };
