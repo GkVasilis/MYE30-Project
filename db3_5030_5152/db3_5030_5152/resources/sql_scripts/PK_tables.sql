@@ -9,7 +9,6 @@ CREATE TABLE conferences {
     conference_ID INT NOT NULL AUTO_ΙNCREMENT,
     conference_name VARCHAR(100),
     PRIMARY KEY (conference_ID)
-
 };
 
 CREATE TABLE authors {
