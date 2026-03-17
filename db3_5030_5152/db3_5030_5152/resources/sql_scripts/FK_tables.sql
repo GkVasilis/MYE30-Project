@@ -54,12 +54,16 @@ CREATE journal_rankings {
     ON DELETE CASCADE ON UPDATE CASCADE
 };
 
+
 CREATE TABLE conference_rankings {
     conference_ID INT NOT NULL,
     conf_ID INT NOT NULL,
-    title VARCHAR(100),
-    rank INT,
-    primaryFoR INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    acronym VARCHAR(100),
+    rank VARCHAR(100),
+    PRIMARY KEY (conf_ID, title),
+    FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
+    ON DELETE CASCADE ON UPDATE CASCADE
 };
 
 
