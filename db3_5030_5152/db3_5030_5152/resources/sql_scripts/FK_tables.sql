@@ -54,32 +54,26 @@ CREATE journal_rankings {
     ON DELETE CASCADE ON UPDATE CASCADE
 };
 
-
 CREATE TABLE conference_rankings {
     conference_ID INT NOT NULL,
-    conf_ID INT NOT NULL,
-    title VARCHAR(100) NOT NULL,
-    acronym VARCHAR(100),
-    rank VARCHAR(100),
-    PRIMARY KEY (conf_ID, title),
+    conf_rank_ID INT NOT NULL,
+    title VARCHAR(100),
+    rank INT,
+    primaryFoR INT NOT NULL,
+    PRIMARY KEY (conf_rank_ID),
     FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
-
-
-CREATE TABLE primaryFoRs {
-    conf_ID INT NOT NULL,
-    /*CSE convert to Int*/
-    primaryFor INT NOT NULL,
-    PRIMARY KEY (conf_ID, primaryFor),
-    FOREIGN KEY (conf_ID) REFERENCES conference_rankings(conf_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
 };
 
 
 
 CREATE TABLE conference_categories {
-    primaryFor INT NOT NULL,
-    category_name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (category_name)
+    conference_ID INT NOT NULL,
+    category_code VARCHAR(100),
+    title VARCHAR(100),
+    PRIMARY KEY (conference_ID, title),
+    FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
+    ON DELETE CASCADE ON UPDATE CASCADE
 };
+
+
