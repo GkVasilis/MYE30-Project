@@ -6,4 +6,3 @@ CREATE TABLE articles {
     published_year INT NOT NULL,
     PRIMARY KEY (article_ID)
     };
-

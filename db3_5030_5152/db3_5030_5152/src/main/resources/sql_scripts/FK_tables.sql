@@ -82,4 +82,3 @@ CREATE TABLE conference_categories {
     ON DELETE CASCADE ON UPDATE CASCADE
 };
 
-
