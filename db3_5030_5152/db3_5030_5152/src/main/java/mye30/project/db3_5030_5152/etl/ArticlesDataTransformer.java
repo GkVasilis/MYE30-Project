@@ -16,6 +16,8 @@ public class ArticlesDataTransformer {
         String outputCSVFile1 = "src/main/resources/transformed_data/Journal_Articles_Data.tsv";
         String outputCSVFile2 = "src/main/resources/transformed_data/Conference_Articles_Data.tsv";
         String outputCSVFile3 = "src/main/resources/transformed_data/Articles_Data.tsv";
+        String outputTSVFile4 = "src/main/resources/transformed_data/Authors_Data.tsv";
+
         String line;
         int article_ID = 0;
         String column1 = "article_ID,";
@@ -58,7 +60,7 @@ public class ArticlesDataTransformer {
         }
 
 
-        // Articles
+        // Articles writer
         try (BufferedWriter bw3 = new BufferedWriter(new FileWriter(outputCSVFile3))) {
             bw3.write("article_ID" + "\t" + "title" + "\t" + "published_year");
             bw3.newLine();
@@ -71,7 +73,7 @@ public class ArticlesDataTransformer {
         }
 
 
-        // Journal_articles
+        // Journal_articles writer
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputCSVFile1))) {
             bw.write(column1);
             bw.newLine();
@@ -84,7 +86,7 @@ public class ArticlesDataTransformer {
         }
 
 
-        // Conference_articles
+        // Conference_articles writer
         try (BufferedWriter bw2 = new BufferedWriter(new FileWriter(outputCSVFile2))) {
             bw2.write(column2);
             bw2.newLine();
@@ -95,6 +97,10 @@ public class ArticlesDataTransformer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        // Author_data writer
+
 
 
         System.out.println("Data transformation complete!");
