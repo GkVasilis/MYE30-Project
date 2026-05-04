@@ -19,8 +19,6 @@ CREATE TABLE journal_articles {
     ON DELETE CASCADE ON UPDATE CASCADE
 };
 
-
-
 CREATE TABLE conference_articles {
     article_ID INT NOT NULL,
     conference_ID INT NOT NULL,
@@ -46,6 +44,7 @@ CREATE journal_rankings {
     rank INT NOT NULL,
     title VARCHAR(100) NOT NULL,
     bestSubjectArea VARCHAR(100),
+    bestSubjectRank VARCHAR(100),
     country VARCHAR(100),
     bestCategories VARCHAR(100),
     journal_language VARCHAR(100),

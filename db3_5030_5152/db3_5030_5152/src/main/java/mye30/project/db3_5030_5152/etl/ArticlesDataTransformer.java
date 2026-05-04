@@ -1,3 +1,5 @@
+/* Also is a AuthorDataTransformer */
+
 package mye30.project.db3_5030_5152.etl;
 
 import java.io.BufferedReader;
@@ -6,7 +8,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ArticlesDataTransformer {
 
@@ -19,7 +23,8 @@ public class ArticlesDataTransformer {
         String outputTSVFile4 = "src/main/resources/transformed_data/Authors_Data.tsv";
 
         String line;
-        int article_ID = 0;
+        int article_ID = 1;
+        int author_ID = 1;
         String column1 = "article_ID,";
         String column2 = "article_ID,";
 
@@ -28,6 +33,8 @@ public class ArticlesDataTransformer {
         List<String> linesArticle = new ArrayList<>();
         List<String> linesJournal = new ArrayList<>();
         List<String> linesConference = new ArrayList<>();
+        List<String> linesAuthors = new ArrayList<>();
+        Map<String, Integer> authorsMap = new HashMap<>();
 
 
         // Reads temp journal_articles
@@ -39,6 +46,7 @@ public class ArticlesDataTransformer {
 
                 String[] linePieces = line.split(";");
                 linesArticle.add(article_ID + "\t" + linePieces[0] + "\t" + linePieces[7]);
+                linesAuthors.add(linePieces[12] + "\t" + article_ID + "\t" + linePieces[0]);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,13 +62,14 @@ public class ArticlesDataTransformer {
 
                 String[] linePieces = line.split(";");
                 linesArticle.add(article_ID + "\t" + linePieces[2] + "\t" + linePieces[9]);
+                linesAuthors.add(linePieces[11] + "\t" + article_ID + "\t" + linePieces[2]);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        // Articles writer
+        // Articles Writer
         try (BufferedWriter bw3 = new BufferedWriter(new FileWriter(outputCSVFile3))) {
             bw3.write("article_ID" + "\t" + "title" + "\t" + "published_year");
             bw3.newLine();
@@ -99,8 +108,30 @@ public class ArticlesDataTransformer {
         }
 
 
-        // Author_data writer
+        // Author_data Writer
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputTSVFile4))) {
+            bw.write("author_ID" + "\t" + "author_name" + "\t" + "article_ID" + "\t" + "title");
+            bw.newLine();
+            for (int i=1; i<linesAuthors.size(); i++) {
+                String[] linePieces = linesAuthors.get(i).split("\t");
+                String[] authorNames = linePieces[0].split("|");
 
+                for (int j=0; j<authorNames.length; j++) {
+                    if (authorsMap.containsKey(authorNames[j].trim())) {
+                        bw.write(authorsMap.get(authorNames[j].trim()) + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[1].trim());
+                        bw.newLine();
+                    } else {
+                        bw.write(author_ID + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[1].trim());
+                        bw.newLine();
+                        authorsMap.put(authorNames[j].trim(), author_ID);
+                        author_ID++;
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         System.out.println("Data transformation complete!");

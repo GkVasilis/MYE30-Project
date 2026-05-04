@@ -25,10 +25,9 @@ public class ConferenceDataTransformer {
         }
 
 
-        // Write Data to a new file which is ready to be imported in the db
+        // Write Data to a new file which is ready to be imported in the DB
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputCSVFile1))) {
             List<String> outputLines = new ArrayList<>();
-            //List<String> titleExceptions = new ArrayList<>(List.of("", "(paper withdrawn)", "(paper retracted)", "(duplicate entry was deleted)", "(was never published)"));
 
             String firstLine = lines.get(0);
             String[] firstLinePieces = firstLine.split(";");
@@ -57,14 +56,13 @@ public class ConferenceDataTransformer {
 
         try (BufferedWriter bw2 = new BufferedWriter(new FileWriter(outputCSVFile2))) {
             List<String> outputLines = new ArrayList<>();
-            //List<String> authorData = new ArrayList<>();
             List<String> titleExceptions = new ArrayList<>(List.of("", "(paper withdrawn)", "(paper retracted)", "(duplicate entry was deleted)", "(was never published)"));
 
             String firstLine = lines.get(0);
             String[] firstLinePieces = firstLine.split(";");
             outputLines.add(firstLinePieces[0].trim() + "\t" + firstLinePieces[2].trim() + "\t" + firstLinePieces[19].trim() + "\t" + firstLinePieces[3].trim()
                     + "\t" + firstLinePieces[6].trim() + "\t" + firstLinePieces[16].trim() + "\t" + firstLinePieces[22].trim() + "\t" + firstLinePieces[15].trim()
-                    + "\t" + firstLinePieces[11].trim() + "\t" + firstLinePieces[23].trim() + "\t" + firstLinePieces[10].trim());
+                    + "\t" + firstLinePieces[11].trim() + "\t" + firstLinePieces[23].trim() + "\t" + firstLinePieces[10].trim() + "\t" + firstLinePieces[1].trim());
 
             for (int i=1; i<lines.size(); i++) {
                 String thisLine = lines.get(i);
@@ -73,8 +71,7 @@ public class ConferenceDataTransformer {
                 if (linePieces[19] != null && !titleExceptions.contains(linePieces[19].trim())) {
                     outputLines.add(linePieces[0].trim() + "\t" + linePieces[2].trim() + "\t" + linePieces[19].trim() + "\t" + linePieces[3].trim()
                             + "\t" + linePieces[6].trim() + "\t" + linePieces[16].trim() + "\t" + linePieces[22].trim() + "\t" + linePieces[15].trim()
-                            + "\t" + linePieces[11].trim() + "\t" + linePieces[23].trim() + "\t" + linePieces[10].trim());
-                    //authorData.add(linePieces[1].trim());
+                            + "\t" + linePieces[11].trim() + "\t" + linePieces[23].trim() + "\t" + linePieces[10].trim() + "\t" + linePieces[1].trim());
                 }
 
             }

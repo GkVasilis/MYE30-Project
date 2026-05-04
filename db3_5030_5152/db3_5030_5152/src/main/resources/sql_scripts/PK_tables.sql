@@ -21,6 +21,7 @@ CREATE TABLE authors {
     REFERENCES articles(article_ID, title)
     ON DELETE CASCADE ON UPDATE CASCADE
 };
+
 /*
 CREATE TABLE author_articles {
     author_ID INT NOT NULL,
@@ -33,4 +34,5 @@ CREATE TABLE author_articles {
     REFERENCES articles(article_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
 };*/
+
 

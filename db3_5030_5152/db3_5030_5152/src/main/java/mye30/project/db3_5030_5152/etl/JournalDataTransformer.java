@@ -29,7 +29,7 @@ public class JournalDataTransformer {
         }
 
 
-        // Write file for table Journals
+        // Write file for table journals
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputCSVFile1))) {
             List<String> outputLines = new ArrayList<>();
 
@@ -43,9 +43,6 @@ public class JournalDataTransformer {
 
                 if (linePieces[10] != null && !linePieces[10].isEmpty()) {
                     outputLines.add(linePieces[0].trim() + "\t" + linePieces[10].trim() + "\t" + linePieces[17].trim());
-                    //outputLines.add(linePieces[0].trim());
-                    //outputLines.add(linePieces[10].trim());
-                    //outputLines.add(linePieces[17].trim());
                 }
 
             }
@@ -60,17 +57,16 @@ public class JournalDataTransformer {
         }
 
 
-        // Write temp file for table Journal_articles
+        // Write temp file for table journal_articles
         try (BufferedWriter bw2 = new BufferedWriter(new FileWriter(outputCSVFile2))) {
             List<String> outputLines = new ArrayList<>();
-            //List<String> authorData = new ArrayList<>();
             List<String> titleExceptions = new ArrayList<>(List.of("", "(paper withdrawn)", "(paper retracted)", "(duplicate entry was deleted)", "(was never published)"));
 
             String firstLine = lines.get(0);
             String[] firstLinePieces = firstLine.split(";");
             outputLines.add(firstLinePieces[23].trim() + "\t" + firstLinePieces[0].trim() + "\t" + firstLinePieces[10].trim() + "\t" + firstLinePieces[17].trim()
                         + "\t" + firstLinePieces[3].trim() + "\t" + firstLinePieces[6].trim() + "\t" + firstLinePieces[12].trim() + "\t" + firstLinePieces[28].trim()
-                        + "\t" + firstLinePieces[26].trim() + "\t" + firstLinePieces[16].trim() + "\t" + firstLinePieces[18].trim() + "\t" + firstLinePieces[11].trim());
+                        + "\t" + firstLinePieces[26].trim() + "\t" + firstLinePieces[16].trim() + "\t" + firstLinePieces[18].trim() + "\t" + firstLinePieces[11].trim() + "\t" + firstLinePieces[11].trim());
 
 
             for (int i=1; i<lines.size(); i++) {
@@ -80,8 +76,7 @@ public class JournalDataTransformer {
                 if (linePieces[23] != null && !titleExceptions.contains(linePieces[23].trim())) {
                     outputLines.add(linePieces[23].trim() + "\t" + linePieces[0].trim() + "\t" + linePieces[10].trim() + "\t" + linePieces[17].trim()
                             + "\t" + linePieces[3].trim() + "\t" + linePieces[6].trim() + "\t" + linePieces[12].trim() + "\t" + linePieces[28].trim()
-                            + "\t" + linePieces[26].trim() + "\t" + linePieces[16].trim() + "\t" + linePieces[18].trim() + "\t" + linePieces[11].trim());
-                    //authorData.add(linePieces[1].trim());
+                            + "\t" + linePieces[26].trim() + "\t" + linePieces[16].trim() + "\t" + linePieces[18].trim() + "\t" + linePieces[11].trim() + "\t" + linePieces[1].trim());
                 }
 
             }
