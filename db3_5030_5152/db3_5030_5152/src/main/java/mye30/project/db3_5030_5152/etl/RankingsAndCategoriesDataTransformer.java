@@ -1,8 +1,6 @@
 package mye30.project.db3_5030_5152.etl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +12,12 @@ public class RankingsAndCategoriesDataTransformer {
         String inputCsvFile2 = "src/main/resources/data/bestSubjectArea.csv";
         String inputCSVFile3 = "src/main/resources/data/iCore26_KilledColumnsForLoading.csv";
         String inputTsvFile4 = "src/main/resources/transformed_data/DataForJournal.tsv";
+        String inputTsvFile5 = "src/main/resources/transformed_data/DataForConference.tsv";
+        String inputXlsxFile6 = "src/main/resources/data/icoreCategories.xlsx";
 
         String outputTSVFile1 = "src/main/resources/transformed_data/Journal_rankings_Data.tsv";
         String outputTSVFile2 = "src/main/resources/transformed_data/Conference_rankings_Data.tsv";
-        String outputTSVFile3 = "src/main/resources/transformed_data/PrimaryFoRs_Data.tsv";
+        //String outputTSVFile3 = "src/main/resources/transformed_data/PrimaryFoRs_Data.tsv";
         String outputTSVFile4 = "src/main/resources/transformed_data/Conference_Categories_Data.tsv";
 
         String line;
@@ -26,6 +26,8 @@ public class RankingsAndCategoriesDataTransformer {
         List<String> linesJournalRankings = new ArrayList<>();
         List<String> linesConferenceRankings = new ArrayList<>();
         List<String> linesJournalData = new ArrayList<>();
+        List<String> linesConferenceData = new ArrayList<>();
+        List<String> linesBestSubjectArea = new ArrayList<>();
 
 
         // Reads journal_data
@@ -64,6 +66,92 @@ public class RankingsAndCategoriesDataTransformer {
 
             }
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+
+
+        // Reads iCore26_KilledColumnsForLoading
+        try (BufferedReader br = new BufferedReader(new FileReader(inputCSVFile3))) {
+            String[] firstLinePieces = br.readLine().split(",");
+            linesConferenceRankings.add("conference_ID" + "\t" + firstLinePieces[0].trim() + "\t" + firstLinePieces[1].trim() + "\t" + firstLinePieces[4].trim() + "\t" + firstLinePieces[6].trim()); // TODO primaryFoR
+
+            while ((line = br.readLine()) != null) {
+                String[] linePieces = line.split(",");
+                if (linePieces[0] != null && linePieces[1] != null && linePieces[9] != null) {
+
+
+                    ///  Compare Titles   ///////////
+                    String thisTitle = linePieces[1].toLowerCase().replaceAll("\b(the|a|an)\b", "").replaceAll("\\p{Punct}", "").trim();
+                    for (int i = 0; i < linesConferenceData.size(); i++) {
+                        String[] array = linesConferenceData.get(i).split("\t");
+                        String otherTitle = array[1].toLowerCase().replaceAll("\b(the|a|an)\b", "").replaceAll("\\p{Punct}", "").trim();
+                        if (thisTitle.equals(otherTitle)) {
+                            linesConferenceRankings.add(array[0] + "\t" + linePieces[0].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[4].trim() + "\t" + linePieces[6].trim()); // TODO primaryFoR
+                        }
+                    }
+                    ///    ////////////
+
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+        // Reads icoreCategories TODO
+        try (BufferedReader br6 = new BufferedReader(new FileReader(inputXlsxFile6))) {
+            linesConferenceRankings.add("ID" + "\t" + "title"); //"conference_ID" + "\t" + //id = Primaryfor
+
+            while ((line = br6.readLine()) != null) {
+                String[] linePieces = line.split("");
+                if (linePieces[0] != null && linePieces[1] != null) {
+
+
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+
+        // Writes journal_ranking_Data
+        try (BufferedWriter bw2 = new BufferedWriter(new FileWriter(outputTSVFile1))) {
+            for (String editedLine : linesJournalRankings) {
+                bw2.write(editedLine);
+                bw2.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        // Writes Conference_rankings_Data
+        try (BufferedWriter bw2 = new BufferedWriter(new FileWriter(outputTSVFile2))) {
+            for (String editedLine : linesConferenceRankings) {
+                bw2.write(editedLine);
+                bw2.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

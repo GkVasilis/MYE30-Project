@@ -58,12 +58,12 @@ CREATE TABLE conference_rankings {
     conf_rank_ID INT NOT NULL,
     title VARCHAR(100),
     rank INT,
-    /*primaryFoR VARCHAR(100),*/
+    primaryFoR VARCHAR(100),
     PRIMARY KEY (conf_rank_ID),
     FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
 };
-
+/*
 CREATE TABLE primaryFoRs {
     conf_rank_ID INT NOT NULL,
     primaryFor VARCHAR(100),
@@ -71,9 +71,11 @@ CREATE TABLE primaryFoRs {
     FOREIGN KEY (conf_rank_ID) REFERENCES conference_rankings(conf_rank_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
 };
+*/
+
 
 CREATE TABLE conference_categories {
-    conference_ID INT NOT NULL,
+    /*conference_ID INT NOT NULL,*/
     primaryFor VARCHAR(100),
     title VARCHAR(100),
     PRIMARY KEY (conference_ID, title),
