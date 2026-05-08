@@ -75,7 +75,7 @@ CREATE TABLE primaryFoRs {
 
 
 CREATE TABLE conference_categories {
-    /*conference_ID INT NOT NULL,*/
+    /*conference_ID INT NOT NULL ,*/
     primaryFor VARCHAR(100),
     title VARCHAR(100),
     PRIMARY KEY (conference_ID, title),

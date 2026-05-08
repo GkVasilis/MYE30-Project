@@ -56,6 +56,7 @@ public class TableInitialization {
         executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/Article_table.sql");
         executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/PK_tables.sql");
         executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/FK_tables.sql");
+        executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/Drop_tables.sql");
         System.out.println("Table script executing complete.");
     }
 }
