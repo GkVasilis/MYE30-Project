@@ -32,7 +32,7 @@ public class Article {
         this.article_ID = article_ID;
     }
 
-    public String  getTitle() {
+    public String getTitle() {
         return title;
     }
 
