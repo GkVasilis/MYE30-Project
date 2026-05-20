@@ -16,6 +16,11 @@ public class YearServiceImp implements YearService {
     private YearRepository repo;
 
     @Override
+    public List<Integer> findAllYears() {
+        return repo.findAllYears();
+    }
+
+    @Override
     public int findPublishedArticles(int year){
         return repo.findPublishedArticles(year);
     }

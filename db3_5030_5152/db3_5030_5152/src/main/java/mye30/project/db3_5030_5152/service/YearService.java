@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface YearService {
 
-
+    List<Integer> findAllYears();
 
     int findPublishedArticles(int year);
 

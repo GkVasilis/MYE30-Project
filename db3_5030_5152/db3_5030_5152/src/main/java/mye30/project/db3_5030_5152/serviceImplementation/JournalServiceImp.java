@@ -15,6 +15,11 @@ public class JournalServiceImp implements JournalService {
     private JournalRepository repo;
 
     @Override
+    public List<String> findAllJournals() {
+        return repo.findAllJournals();
+    }
+
+    @Override
     public JournalRanking findJournalRanking(String journal_name) {
         return repo.findJournalRanking(journal_name);
     }

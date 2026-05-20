@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface ConferenceService {
 
+    List<String> findAllConferences();
+
     ConferenceRanking findConferenceRanking(String conf_name);
 
     List<Object[]> findNumOfConferenceArticlesByYear(String conf_name);

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.deser.CreatorProperty;
 
+import java.security.PublicKey;
 import java.util.List;
 
 
@@ -15,6 +16,11 @@ public class ConferenceServiceImp implements ConferenceService {
 
     @Autowired
     private ConferenceRepository repo;
+
+    @Override
+    public List<String> findAllConferences() {
+        return repo.findAllConferences();
+    }
 
     @Override
     public ConferenceRanking findConferenceRanking(String conf_name){

@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface JournalService {
 
+    List<String> findAllJournals();
+
     JournalRanking findJournalRanking(String journal_name);
 
     List<Object[]> findNumOfJournalArticlesByYear(String journal_name);

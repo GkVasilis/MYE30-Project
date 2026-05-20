@@ -14,6 +14,12 @@ public class AuthorServiceImp implements AuthorService {
     @Autowired
     private AuthorRepositoty repo;
 
+
+    @Override
+    public List<String> findAllAuthors() {
+        return repo.findAllAuthors();
+    }
+
     @Override
     public int findLastPublishedYear(String author_name) {
         return repo.findLastPublishedYear(author_name);
