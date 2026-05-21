@@ -11,9 +11,9 @@ import java.util.List;
 public class JournalDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile = "src/main/resources/data/input_article.csv";
-        String outputCSVFile1 = "src/main/resources/transformed_data/DataForJournal.tsv";
-        String outputCSVFile2 = "src/main/resources/transformed_data/TempDataForJournalArticles.tsv";
+        String inputCsvFile = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\input_article.csv";
+        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForJournal.tsv";
+        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForJournalArticles.tsv";
         String line;
         List<String> lines = new ArrayList<>();
 
@@ -35,11 +35,11 @@ public class JournalDataTransformer {
 
             
             String firstLine = lines.get(0);
-            String[] firstLinePieces = firstLine.split(";");
+            String[] firstLinePieces = firstLine.split(";", -1);
             outputLines.add(firstLinePieces[0].trim() + "\t" + firstLinePieces[10].trim() + "\t" + firstLinePieces[17].trim());
 
             for (int i=1; i<lines.size(); i++) {
-                String[] linePieces = lines.get(i).split(";");
+                String[] linePieces = lines.get(i).split(";", -1);
 
                 if (linePieces[10] != null && !linePieces[10].isEmpty()) {
                     outputLines.add(linePieces[0].trim() + "\t" + linePieces[10].trim() + "\t" + linePieces[17].trim());
@@ -63,7 +63,7 @@ public class JournalDataTransformer {
             List<String> titleExceptions = new ArrayList<>(List.of("", "(paper withdrawn)", "(paper retracted)", "(duplicate entry was deleted)", "(was never published)"));
 
             String firstLine = lines.get(0);
-            String[] firstLinePieces = firstLine.split(";");
+            String[] firstLinePieces = firstLine.split(";", -1);
             outputLines.add(firstLinePieces[23].trim() + "\t" + firstLinePieces[0].trim() + "\t" + firstLinePieces[10].trim() + "\t" + firstLinePieces[17].trim()
                         + "\t" + firstLinePieces[3].trim() + "\t" + firstLinePieces[6].trim() + "\t" + firstLinePieces[12].trim() + "\t" + firstLinePieces[28].trim()
                         + "\t" + firstLinePieces[26].trim() + "\t" + firstLinePieces[16].trim() + "\t" + firstLinePieces[18].trim() + "\t" + firstLinePieces[11].trim() + "\t" + firstLinePieces[11].trim());
@@ -71,7 +71,7 @@ public class JournalDataTransformer {
 
             for (int i=1; i<lines.size(); i++) {
                 String thisLine = lines.get(i);
-                String[] linePieces = thisLine.split(";");
+                String[] linePieces = thisLine.split(";", -1);
 
                 if (linePieces[23] != null && !titleExceptions.contains(linePieces[23].trim())) {
                     outputLines.add(linePieces[23].trim() + "\t" + linePieces[0].trim() + "\t" + linePieces[10].trim() + "\t" + linePieces[17].trim()

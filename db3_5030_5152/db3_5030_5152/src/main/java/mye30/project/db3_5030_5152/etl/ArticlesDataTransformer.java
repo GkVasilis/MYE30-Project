@@ -15,12 +15,12 @@ import java.util.Map;
 public class ArticlesDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile1 = "src/main/resources/transformed_data/TempDataForJournalArticles.tsv";
-        String inputCsvFile2 = "src/main/resources/transformed_data/TempDataForConferenceArticles.tsv";
-        String outputCSVFile1 = "src/main/resources/transformed_data/Journal_Articles_Data.tsv";
-        String outputCSVFile2 = "src/main/resources/transformed_data/Conference_Articles_Data.tsv";
-        String outputCSVFile3 = "src/main/resources/transformed_data/Articles_Data.tsv";
-        String outputTSVFile4 = "src/main/resources/transformed_data/Authors_Data.tsv";
+        String inputCsvFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForJournalArticles.tsv";
+        String inputCsvFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForConferenceArticles.tsv";
+        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Journal_Articles_Data.tsv";
+        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_Articles_Data.tsv";
+        String outputCSVFile3 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Articles_Data.tsv";
+        String outputTSVFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Authors_Data.tsv";
 
         String line;
         int article_ID = 1;
@@ -44,7 +44,7 @@ public class ArticlesDataTransformer {
                 article_ID++;
                 linesJournal.add(article_ID+"\t"+line);
 
-                String[] linePieces = line.split(";");
+                String[] linePieces = line.split("\t", -1);
                 linesArticle.add(article_ID + "\t" + linePieces[0] + "\t" + linePieces[7]);
                 linesAuthors.add(linePieces[12] + "\t" + article_ID + "\t" + linePieces[0]);
             }
@@ -60,7 +60,7 @@ public class ArticlesDataTransformer {
                 article_ID++;
                 linesConference.add(article_ID+"\t"+line);
 
-                String[] linePieces = line.split(";");
+                String[] linePieces = line.split("\t", -1);
                 linesArticle.add(article_ID + "\t" + linePieces[2] + "\t" + linePieces[9]);
                 linesAuthors.add(linePieces[11] + "\t" + article_ID + "\t" + linePieces[2]);
             }
@@ -114,7 +114,7 @@ public class ArticlesDataTransformer {
             bw.newLine();
             for (int i=1; i<linesAuthors.size(); i++) {
                 String[] linePieces = linesAuthors.get(i).split("\t");
-                String[] authorNames = linePieces[0].split("|");
+                String[] authorNames = linePieces[0].split("\\|");
 
                 for (int j=0; j<authorNames.length; j++) {
                     if (authorsMap.containsKey(authorNames[j].trim())) {

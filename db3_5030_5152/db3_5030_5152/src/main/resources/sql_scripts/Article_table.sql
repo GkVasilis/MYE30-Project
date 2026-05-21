@@ -1,7 +1,7 @@
 CREATE TABLE articles
 (
     article_ID     INT          NOT NULL,
-    title          VARCHAR(100) NOT NULL,
+    title          VARCHAR(500) NOT NULL,
     /*article_journal_id INT,
     article_conference_id INT,*/
     published_year INT          NOT NULL,

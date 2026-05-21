@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class TSVToDBImporter {
 
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/MYE30_DB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/mye30_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "whig,worse:selfCS@";
 
@@ -24,48 +24,54 @@ public class TSVToDBImporter {
     }
 
     // Insert data to db
-    private static void insertDataToDBTable(Connection connection, String tsvFile, String tableName) throws IOException, SQLException {
+    private static void insertDataWithExplicitColumns(Connection connection, String tsvFile, String tableName, List<String> columns) throws IOException, SQLException {
         int recordsInserted = 0;
         long startTime = System.currentTimeMillis();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(tsvFile))) {
             reader.readLine(); // Read the header line
 
-            // Get the columns of the table dynamically
-            List<String> columns = getTableColumns(connection, tableName);
-
-            // Construct the SQL query
             String insertQuery = constructInsertQuery(tableName, columns);
 
-            // Prepare the insert statement
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
-                String[] line;
-                while ((line = reader.readLine().split("\t")) != null) {
+                String rawLine;
+                while ((rawLine = reader.readLine()) != null) {
+                    if (rawLine.trim().isEmpty()) continue;
+
+                    // Safe tab splitting format handling
+                    String[] line = rawLine.split("\t", -1);
+
                     try {
-                        // Set parameters for the prepared statement based on the TSV columns and their indices
                         for (int i = 0; i < columns.size(); i++) {
-                            if(isWhiteSpace(line[i])) {
-                                preparedStatement.setString(i + 1, null);
-                            }
-                            else {
-                                preparedStatement.setString(i + 1, line[i]);
+                            if (i >= line.length || isWhiteSpace(line[i])) {
+                                preparedStatement.setNull(i + 1, Types.VARCHAR);
+                            } else {
+                                preparedStatement.setString(i + 1, line[i].trim());
                             }
                         }
-                        preparedStatement.executeUpdate();
+
+                        // Added batch accumulation to prevent slow network pings
+                        preparedStatement.addBatch();
                         recordsInserted++;
+
+                        if (recordsInserted % 2000 == 0) {
+                            preparedStatement.executeBatch();
+                            connection.commit();
+                        }
                     } catch (SQLException e) {
-                        System.err.println("Error inserting data: " + e.getMessage());
-                        System.err.println("Problematic data: " + Arrays.toString(line));
+                        System.err.println("Skipping bad row in " + tableName + ": " + e.getMessage());
                     }
                 }
+                // Flush final batch remainder lines
+                preparedStatement.executeBatch();
+                connection.commit();
             }
         } catch (IOException e1) {
-            e1.printStackTrace();
+            System.err.println("Could not find file: " + tsvFile);
         }
-        // Calculate elapsed time for each csv insertion
+
         long endTime = System.currentTimeMillis();
-        int timeElapsed = (int) (endTime - startTime);
-        System.out.println(recordsInserted + " records inserted into " + tableName + " in " + (double)timeElapsed/1000 + " seconds.\n");
+        System.out.println(recordsInserted + " records successfully pushed to " + tableName + " in " + (double)(endTime - startTime)/1000 + " seconds.\n");
     }
 
     // Method to retrieve the columns of the table
@@ -82,8 +88,10 @@ public class TSVToDBImporter {
     }
 
     // Method to construct the INSERT query dynamically
+    // Method to construct the INSERT query dynamically
     private static String constructInsertQuery(String tableName, List<String> columns) {
-        StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
+        // Added IGNORE so MySQL skips duplicate primary keys silently without crashing batch cycles
+        StringBuilder queryBuilder = new StringBuilder("INSERT IGNORE INTO ");
         queryBuilder.append(tableName).append(" (");
         // Append column names
         for (int i = 0; i < columns.size(); i++) {
@@ -106,39 +114,54 @@ public class TSVToDBImporter {
 
 
     public static void main(String[] args) {
-        String path = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data";
-        String[] csvFile = {"DataForJournal.tsv",
+        String path = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\";
+
+        String[] csvFile = {
+                "DataForJournal.tsv",
                 "DataForConference.csv",
+                "Articles_Data.tsv",
                 "Journal_Articles_Data.tsv",
                 "Conference_Articles_Data.tsv",
-                "Articles_Data.tsv",
-                "Authors_Data.tsv",
-                "Journal_rankings_Data.tsv",
-                "Conference_rankings_Data.tsv",
-                "Conference_Categories_Data.tsv"};
+                "Authors_Data.tsv"//,
+                //"Journal_rankings_Data.tsv",
+                //"Conference_rankings_Data.tsv"
+                /*"Conference_Categories_Data.tsv"*/
+        };
 
-        String[] tableName = {"journals", "conferences", "journal_articles", "conference_articles",
-                "articles", "authors", "journal_rankings", "conference_rankings", "conference_categories"};
+        String[] tableName = {
+                "journals", "conferences", "articles", "journal_articles",
+                "conference_articles", "authors"
+                //"journal_rankings",
+                //"conference_rankings" /*"conference_categories"*/
+        };
+
+        // Explicitly define columns to bypass the metadata lock trap entirely!
+        List<List<String>> allColumns = Arrays.asList(
+                Arrays.asList("journal_ID", "journal_name", "publisher"),
+                Arrays.asList("conference_ID", "conference_name"),
+                Arrays.asList("article_ID", "title", "published_year"),
+                Arrays.asList("article_ID", "title", "journal_ID", "journal_name", "publisher", "cdrom", "crossref", "mdate", "published_year", "url", "pages", "publtype", "journal_key"),
+                Arrays.asList("article_ID", "conference_ID", "conference_name", "title", "cdrom", "crossref", "publtype", "url", "pages", "mdate", "published_year", "conference_key"),
+                Arrays.asList("author_ID", "author_name", "article_ID", "title")
+                //Arrays.asList("journal_ID", "j_rank", "title", "bestSubjectArea", "bestSubjectRank", "country", "bestCategories", "journal_language"),
+                //Arrays.asList("conference_ID", "conf_rank_ID", "title", "c_rank", "primaryFoR")
+                //Arrays.asList("conference_ID", "category_name")
+        );
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
-            int len = csvFile.length;
-            // First add countries and the missing ones
-            /*
-            System.out.println("Inserting data to table: countries");
-            insertDataToDBTable(connection, path+"Tf_Countries_Data.csv", "countries");
+            // Fast batching mode enabled!
             connection.setAutoCommit(false);
-            MissingCountriesFinder finder = new MissingCountriesFinder();
-            finder.findMissingCountries();
-            connection.commit();
-            connection.setAutoCommit(true);
-            */
-            for(int i = 0; i<len; i++) {
-                System.out.println("\nInserting data to table: " + tableName[i]);
-                insertDataToDBTable(connection, path+csvFile[i], tableName[i]);
+
+            int len = csvFile.length;
+            for(int i = 0; i < len; i++) {
+                System.out.println("Inserting data to table: " + tableName[i]);
+
+                // Call an updated, ultra-fast method variant passing columns manually
+                insertDataWithExplicitColumns(connection, path + csvFile[i], tableName[i], allColumns.get(i));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+
+            connection.setAutoCommit(true);
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         System.out.println("Data insertion complete!");

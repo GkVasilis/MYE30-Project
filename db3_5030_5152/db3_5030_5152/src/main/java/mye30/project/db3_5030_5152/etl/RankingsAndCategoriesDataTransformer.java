@@ -3,22 +3,23 @@ package mye30.project.db3_5030_5152.etl;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+//import org.apache.poi.ss.usermodel.*;
 
 public class RankingsAndCategoriesDataTransformer {
 
     public static void main(String[] args) {
 
-        String inputCsvFile1 = "src/main/resources/data/journal_ranking_data_raw.csv";
-        String inputCsvFile2 = "src/main/resources/data/bestSubjectArea.csv";
-        String inputCSVFile3 = "src/main/resources/data/iCore26_KilledColumnsForLoading.csv";
-        String inputTsvFile4 = "src/main/resources/transformed_data/DataForJournal.tsv";
-        String inputTsvFile5 = "src/main/resources/transformed_data/DataForConference.tsv";
-        String inputXlsxFile6 = "src/main/resources/data/icoreCategories.xlsx";
+        String inputCsvFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\journal_ranking_data_raw.csv";
+        String inputCsvFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\bestSubjectArea.csv";
+        String inputCSVFile3 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\iCore26_KilledColumnsForLoading.csv";
+        String inputTsvFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForJournal.tsv";
+        String inputTsvFile5 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForConference.tsv";
+        String inputXlsxFile6 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\icoreCategories.xlsx";
 
-        String outputTSVFile1 = "src/main/resources/transformed_data/Journal_rankings_Data.tsv";
-        String outputTSVFile2 = "src/main/resources/transformed_data/Conference_rankings_Data.tsv";
-        //String outputTSVFile3 = "src/main/resources/transformed_data/PrimaryFoRs_Data.tsv";
-        String outputTSVFile4 = "src/main/resources/transformed_data/Conference_Categories_Data.tsv";
+        String outputTSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Journal_rankings_Data.tsv";
+        String outputTSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_rankings_Data.tsv";
+        //String outputTSVFile3 = "C:\Users\User\Desktop\MYE30-Project\db3_5030_5152\db3_5030_5152\src\main\resources\transformed_data\PrimaryFoRs_Data.tsv";
+        String outputTSVFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_Categories_Data.tsv";
 
         String line;
         String column1 = "journal_ID,";
@@ -40,15 +41,38 @@ public class RankingsAndCategoriesDataTransformer {
         }
 
 
+        // Reads conference_data
+        try (BufferedReader br = new BufferedReader(new FileReader(inputTsvFile5))) {
+            while ((line = br.readLine()) != null) {
+                linesConferenceData.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        // Reads bestSubjectArea
+        try (BufferedReader br = new BufferedReader(new FileReader(inputCsvFile2))) {
+            while ((line = br.readLine()) != null) {
+                linesBestSubjectArea.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
         // Reads journal_ranking_data_raw
         try (BufferedReader br = new BufferedReader(new FileReader(inputCsvFile1))) {
-            String[] firstLinePieces = br.readLine().split(",");
+            String[] firstLinePieces = br.readLine().split(",", -1);
             linesJournalRankings.add("journal_ID" + "\t" + firstLinePieces[0].trim() + "\t" + firstLinePieces[1].trim() + "\t" + firstLinePieces[9].trim() + "\t" + firstLinePieces[10].trim()
                                                 + "\t" + firstLinePieces[3].trim() + "\t" + firstLinePieces[8].trim() + "\t" + firstLinePieces[22].trim());
 
             while ((line = br.readLine()) != null) {
-                String[] linePieces = line.split(",");
-                if (linePieces[0] != null && linePieces[1] != null && linePieces[9] != null) {
+                String[] linePieces = line.split(",", -1);
+                if (linePieces[0] != null && linePieces[1] != null && linePieces[9] != null && linesBestSubjectArea.contains(linePieces[9])) {
 
                     ///  Compare Titles   ///////////
                     String thisTitle = linePieces[1].toLowerCase().replaceAll("\b(the|a|an)\b", "").replaceAll("\\p{Punct}", "").trim();
@@ -79,11 +103,11 @@ public class RankingsAndCategoriesDataTransformer {
 
         // Reads iCore26_KilledColumnsForLoading
         try (BufferedReader br = new BufferedReader(new FileReader(inputCSVFile3))) {
-            String[] firstLinePieces = br.readLine().split(",");
+            String[] firstLinePieces = br.readLine().split(",", -1);
             linesConferenceRankings.add("conference_ID" + "\t" + firstLinePieces[0].trim() + "\t" + firstLinePieces[1].trim() + "\t" + firstLinePieces[4].trim() + "\t" + firstLinePieces[6].trim()); // TODO primaryFoR
 
             while ((line = br.readLine()) != null) {
-                String[] linePieces = line.split(",");
+                String[] linePieces = line.split(",", -1);
                 if (linePieces[0] != null && linePieces[1] != null && linePieces[9] != null) {
 
 
@@ -112,6 +136,7 @@ public class RankingsAndCategoriesDataTransformer {
 
 
         // Reads icoreCategories TODO
+        /*
         try (BufferedReader br6 = new BufferedReader(new FileReader(inputXlsxFile6))) {
             linesConferenceRankings.add("ID" + "\t" + "title"); //"conference_ID" + "\t" + //id = Primaryfor
 
@@ -127,7 +152,7 @@ public class RankingsAndCategoriesDataTransformer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
 
 
 

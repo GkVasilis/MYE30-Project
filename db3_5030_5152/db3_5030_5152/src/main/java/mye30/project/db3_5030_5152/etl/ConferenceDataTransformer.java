@@ -7,9 +7,9 @@ import java.util.List;
 public class ConferenceDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile = "src/main/resources/data/input_inproceedings.csv";
-        String outputCSVFile1 = "src/main/resources/transformed_data/DataForConference.csv";
-        String outputCSVFile2 = "src/main/resources/transformed_data/TempDataForConferenceArticles.csv";
+        String inputCsvFile = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\input_inproceedings.csv";
+        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForConference.tsv";
+        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForConferenceArticles.tsv";
         String line;
 
         System.out.println("Transforming data...");
@@ -30,12 +30,12 @@ public class ConferenceDataTransformer {
             List<String> outputLines = new ArrayList<>();
 
             String firstLine = lines.get(0);
-            String[] firstLinePieces = firstLine.split(";");
+            String[] firstLinePieces = firstLine.split(";", -1);
             outputLines.add(firstLinePieces[0].trim() + "\t" + firstLinePieces[2].trim());
 
             for (int i=1; i<lines.size(); i++) {
                 String thisLine = lines.get(i);
-                String[] linePieces = thisLine.split(";");
+                String[] linePieces = thisLine.split(";", -1);
 
                 if (linePieces[2] != null && !linePieces[2].isEmpty()) {
                     outputLines.add(linePieces[0].trim() + "\t" + linePieces[2].trim());
@@ -59,14 +59,14 @@ public class ConferenceDataTransformer {
             List<String> titleExceptions = new ArrayList<>(List.of("", "(paper withdrawn)", "(paper retracted)", "(duplicate entry was deleted)", "(was never published)"));
 
             String firstLine = lines.get(0);
-            String[] firstLinePieces = firstLine.split(";");
+            String[] firstLinePieces = firstLine.split(";", -1);
             outputLines.add(firstLinePieces[0].trim() + "\t" + firstLinePieces[2].trim() + "\t" + firstLinePieces[19].trim() + "\t" + firstLinePieces[3].trim()
                     + "\t" + firstLinePieces[6].trim() + "\t" + firstLinePieces[16].trim() + "\t" + firstLinePieces[22].trim() + "\t" + firstLinePieces[15].trim()
                     + "\t" + firstLinePieces[11].trim() + "\t" + firstLinePieces[23].trim() + "\t" + firstLinePieces[10].trim() + "\t" + firstLinePieces[1].trim());
 
             for (int i=1; i<lines.size(); i++) {
                 String thisLine = lines.get(i);
-                String[] linePieces = thisLine.split(";");
+                String[] linePieces = thisLine.split(";", -1);
 
                 if (linePieces[19] != null && !titleExceptions.contains(linePieces[19].trim())) {
                     outputLines.add(linePieces[0].trim() + "\t" + linePieces[2].trim() + "\t" + linePieces[19].trim() + "\t" + linePieces[3].trim()

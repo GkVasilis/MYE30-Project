@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 public class ConferenceCategory {
 
     /* TODO id???? */
-    @Column(name = "primaryFor")
-    private String primaryFor;
+    @Column(name = "primaryFoR")
+    private String primaryFoR;
 
     @Id
     @Column(name = "title")
@@ -17,16 +17,16 @@ public class ConferenceCategory {
     public ConferenceCategory() {}
 
     public ConferenceCategory(String primaryFor, String title) {
-        this.primaryFor = primaryFor;
+        this.primaryFoR = primaryFor;
         this.title = title;
     }
 
     public String getPrimaryFor() {
-        return primaryFor;
+        return primaryFoR;
     }
 
     public void setPrimaryFor(String primaryFor) {
-        this.primaryFor = primaryFor;
+        this.primaryFoR = primaryFoR;
     }
 
     public String getTitle() {
@@ -40,7 +40,7 @@ public class ConferenceCategory {
     @Override
     public String toString() {
         return "ConferenceCategory{" +
-                "primaryFor='" + primaryFor + '\'' +
+                "primaryFor='" + primaryFoR + '\'' +
                 ", title='" + title + '\'' +
                 '}';
     }
