@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Indexed Journals</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background: #f8f9fa; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; }
+        .search-box { margin-bottom: 25px; padding: 15px; background: #eef2f7; border-radius: 6px; }
+        input[type="text"], input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-right: 10px; }
+        button { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px; border-bottom: 1px solid #edf2f7; display: flex; justify-content: space-between; align-items: center; }
+        .view-btn { font-size: 13px; text-decoration: none; color: #3498db; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Indexed Academic Journals</h1>
+
+    <div class="search-box">
+        <form th:action="@{/lineCharts}" method="get">
+            <strong>Compare Trends (Line Chart):</strong><br/><br/>
+            <input type="text" name="journalNames" placeholder="e.g. Journal of DBs" required />
+            <input type="text" name="journalNames" placeholder="Optional: Second Journal" />
+            <input type="number" name="minYear" placeholder="Min Year (e.g. 2010)" />
+            <input type="number" name="maxYear" placeholder="Max Year (e.g. 2026)" />
+            <button type="submit">Compare Metrics</button>
+        </form>
+    </div>
+
+    <ul>
+        <li th:each="journal : ${Journals}">
+            <span th:text="${journal}" style="font-weight: 500;">Journal Name</span>
+            <a th:href="@{/journalProfile(journalName=${journal})}" class="view-btn">View Full Profile →</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

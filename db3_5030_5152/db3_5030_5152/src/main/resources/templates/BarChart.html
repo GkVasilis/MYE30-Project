@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Academic Grouped Metrics Bar Chart</title>
+  <style>
+    body { font-family: sans-serif; margin: 30px; background: #fafafa; color: #2c3e50; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    h1 { font-size: 22px; margin-bottom: 5px; }
+    .context-indicator { font-size: 14px; color: #7f8c8d; margin-bottom: 25px; }
+    #bar-chart-wrapper { width: 100%; margin-top: 20px; }
+    .axis label { font-size: 11px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Comparative Cluster Profile Bar Analytics</h1>
+
+  <div class="context-indicator">
+            <span th:if="${selectedJournals != null && !selectedJournals.isEmpty()}">
+                Active Filter Array: <strong th:text="${#strings.listJoin(selectedJournals, ', ')}"></strong>
+            </span>
+    <span th:if="${selectedConferences != null && !selectedConferences.isEmpty()}">
+                Active Filter Array: <strong th:text="${#strings.listJoin(selectedConferences, ', ')}"></strong>
+            </span>
+    <span th:if="${selectedPublishers != null && !selectedPublishers.isEmpty()}">
+                Active Filter Array: <strong th:text="${#strings.listJoin(selectedPublishers, ', ')}"></strong>
+            </span>
+  </div>
+
+  <div id="bar-chart-wrapper"></div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script th:inline="javascript">
+  // 1. Unpack data array payload
+  const rawJsonString = [[${barChartDataJson}]];
+  const chartRows = JSON.parse(rawJsonString);
+
+  if (chartRows && chartRows.length > 0) {
+    renderGroupedBars(chartRows);
+  } else {
+    document.getElementById("bar-chart-wrapper").innerHTML =
+            "<p style='color: #e74c3c;'>No structured bar metrics found matching parameter queries.</p>";
+  }
+
+  function renderGroupedBars(data) {
+    // Establish rendering dimension box constraints
+    const width = 928; [cite: 12]
+    const height = 500; [cite: 12]
+    const marginTop = 30; [cite: 12]
+    const marginRight = 20; [cite: 12]
+    const marginBottom = 40; [cite: 12]
+    const marginLeft = 50; [cite: 12]
+
+    // Outermost band group splitting the corporate target categories
+    const fx = d3.scaleBand() [cite: 12]
+  .domain(new Set(data.map(d => d.state))) [cite: 12]
+  .rangeRound([marginLeft, width - marginRight]) [cite: 12]
+  .paddingInner(0.15); [cite: 12]
+
+    // Inner sub-bands positioning distinct evaluation metrics side-by-side
+    const metricBuckets = new Set(data.map(d => d.age)); [cite: 12]
+    const x = d3.scaleBand() [cite: 12]
+  .domain(metricBuckets) [cite: 12]
+  .rangeRound([0, fx.bandwidth()]) [cite: 12]
+  .padding(0.05); [cite: 12]
+
+    // Explicit color assignment mapping target bar columns
+    const barColors = d3.scaleOrdinal() [cite: 12]
+  .domain(metricBuckets) [cite: 12]
+  .range(["#2980b9", "#e67e22", "#e74c3c"]);
+
+    // Linear scale establishing bar column vector heights
+    const y = d3.scaleLinear() [cite: 12]
+  .domain([0, d3.max(data, d => d.population)]).nice() [cite: 12]
+  .rangeRound([height - marginBottom, marginTop]); [cite: 12]
+
+    const svg = d3.select("#bar-chart-wrapper")
+            .append("svg")
+            .attr("width", width) [cite: 12]
+  .attr("height", height) [cite: 12]
+  .attr("viewBox", [0, 0, width, height]) [cite: 12]
+  .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;"); [cite: 12]
+
+    // Bind cluster groupings and draw individual rectangular column blocks
+    svg.append("g") [cite: 12]
+  .selectAll("g") [cite: 12]
+  .data(d3.group(data, d => d.state)) [cite: 12]
+  .join("g") [cite: 12]
+  .attr("transform", ([state]) => `translate(${fx(state)},0)`) [cite: 12]
+  .selectAll("rect") [cite: 12]
+  .data(([, values]) => values) [cite: 12]
+  .join("rect") [cite: 12]
+  .attr("x", d => x(d.age)) [cite: 12]
+  .attr("y", d => y(d.population)) [cite: 12]
+  .attr("width", x.bandwidth()) [cite: 12]
+  .attr("height", d => y(0) - y(d.population)) [cite: 12]
+  .attr("fill", d => barColors(d.age)); [cite: 12]
+
+    // Append primary Base Horizontal Axis labels
+    svg.append("g") [cite: 12]
+  .attr("transform", `translate(0,${height - marginBottom})`) [cite: 12]
+  .call(d3.axisBottom(fx).tickSizeOuter(0)); [cite: 12]
+
+    // Append Vertical Quantities Axis
+    svg.append("g") [cite: 12]
+  .attr("transform", `translate(${marginLeft},0)`) [cite: 12]
+  .call(d3.axisLeft(y).ticks(null, "s")) [cite: 12]
+  .call(g => g.append("text")
+            .attr("x", -marginLeft + 8)
+            .attr("y", 15)
+            .attr("fill", "currentColor")
+            .style("font-weight", "bold")
+            .attr("text-anchor", "start")
+            .text("↑ Measured Quantities"));
+
+    // Dynamic Chart Legend Block
+    const legendGroup = svg.append("g")
+            .attr("transform", `translate(${width - 190}, ${marginTop})`);
+
+    Array.from(metricBuckets).forEach((metricKey, index) => {
+      const legendRow = legendGroup.append("g")
+              .attr("transform", `translate(0, ${index * 22})`);
+
+      legendRow.append("rect")
+              .attr("width", 16)
+              .attr("height", 12)
+              .attr("fill", barColors(metricKey));
+
+      legendRow.append("text")
+              .attr("x", 24)
+              .attr("y", 10)
+              .text(metricKey)
+              .style("font-size", "12px")
+              .attr("fill", "#2c3e50");
+    });
+  }
+</script>
+</body>
+</html>

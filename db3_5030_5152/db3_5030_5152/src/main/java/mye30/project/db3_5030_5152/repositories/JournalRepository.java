@@ -19,7 +19,7 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     List<Object[]> findNumOfJournalArticlesByYear(String journal_name);
 
     @Query("SELECT ja.published_year, COUNT(ath.author_ID), COUNT(DISTINCT (ath.author_ID)) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 GROUP BY ja.published_year")
-    List<Object[]> findNumOfJournalAuthorsByYear(String author_name);
+    List<Object[]> findNumOfJournalAuthorsByYear(String journal_name);
 
     // STATS
 

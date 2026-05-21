@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Chronological Index</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background: #f8f9fa; }
+    .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    h1 { color: #2c3e50; }
+    .grid-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+    .year-card { display: block; text-align: center; padding: 15px; background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 6px; text-decoration: none; color: #2b6cb0; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+    .year-card:hover { background: #ebd7f0; color: #4a154b; border-color: #a0aec0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Chronological Timeline Index</h1>
+  <p>Select an individual academic year value below to explore breakdown metrics, publication types, and venue distributions.</p>
+
+  <div class="grid-list">
+    <a th:each="year : ${Years}"
+       th:href="@{/yearProfile(yearValue=${year})}"
+       th:text="${year}"
+       class="year-card">
+      2026
+    </a>
+  </div>
+</div>
+</body>
+</html>

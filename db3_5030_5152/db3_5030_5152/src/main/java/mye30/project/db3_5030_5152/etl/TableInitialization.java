@@ -48,15 +48,15 @@ public class TableInitialization {
     }
 
     public static void main(String[] args) {
-        String jdbcUrl = "jdbc:mysql://localhost:3306/MYE30_DB";
+        String jdbcUrl = "jdbc:mysql://localhost:3306/MYE30_DB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
         String username = "root";
-        String password = "root";
+        String password = "whig,worse:selfCS@";
         // Execute scripts for table initialization
         System.out.println("Initializing DataBase tables...");
-        executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/Article_table.sql");
-        executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/PK_tables.sql");
-        executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/FK_tables.sql");
-        executeScript(jdbcUrl, username, password, "src/main/resources/sql_scripts/Drop_tables.sql");
+        executeScript(jdbcUrl, username, password, "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\sql_scripts\\Article_table.sql");
+        executeScript(jdbcUrl, username, password, "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\sql_scripts\\PK_tables.sql");
+        executeScript(jdbcUrl, username, password, "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\sql_scripts\\FK_tables.sql");
+        executeScript(jdbcUrl, username, password, "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\sql_scripts\\Drop_tables.sql");
         System.out.println("Table script executing complete.");
     }
 }

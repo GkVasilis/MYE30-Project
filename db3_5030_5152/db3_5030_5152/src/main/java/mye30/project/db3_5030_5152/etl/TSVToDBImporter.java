@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 public class TSVToDBImporter {
 
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/MYE30_DB";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/MYE30_DB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "whig,worse:selfCS@";
 
 
     // Chech if blank character

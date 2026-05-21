@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name="authors")
+@IdClass(AuthorId.class)
 public class Author {
 
     @Id

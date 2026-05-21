@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Conference Profile</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background: #f8f9fa; color: #2d3748; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    h1 { color: #1a202c; margin-bottom: 5px; }
+    .meta-tag { background: #feebc8; color: #c05621; padding: 4px 10px; border-radius: 12px; font-size: 13px; display: inline-block; margin-bottom: 20px; font-weight: bold; }
+    .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 20px; }
+    .stats-card { background: #fffaf0; border: 1px solid #feebc8; padding: 20px; border-radius: 6px; }
+    .stats-item { margin-bottom: 15px; font-size: 15px; }
+    .stats-val { font-weight: bold; color: #dd6b20; font-size: 18px; display: block; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; }
+    th { background: #f7fafc; color: #4a5568; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 th:text="${conferenceName}">Conference Name Placeholder</h1>
+  <span class="meta-tag" th:if="${Ranking != null}" th:text="'Core Ranking: ' + ${Ranking.rank}">Rank</span>
+
+  <div class="grid">
+    <div class="stats-card">
+      <h3>Proceedings Metrics</h3>
+      <div class="stats-item">
+        <span class="stats-val" th:text="${NumberConferenceAuthors}">0</span> Total Keynote & Track Authors
+      </div>
+      <div class="stats-item">
+        <span class="stats-val" th:text="${AvgAuthorsofConference}">0</span> Average Co-Authors per Paper
+      </div>
+      <div class="stats-item">
+        <span class="stats-val" th:text="${Avgarticlesbyyear}">0</span> Average Papers Published Annually
+      </div>
+    </div>
+
+    <div>
+      <h3>Catalogued Proceedings Index</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Paper ID</th>
+          <th>Title Header</th>
+          <th>Year</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${Articles}">
+          <td th:text="${article.article_ID}">ID</td>
+          <td th:text="${article.title}" style="font-weight: 500;">Title</td>
+          <td th:text="${article.year}">2026</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

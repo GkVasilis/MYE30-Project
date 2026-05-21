@@ -31,7 +31,7 @@ public class BackupDBExtractor {
     public static void main(String[] args) {
         String dbName = "MYE30_DB";
         String dbUser = "root";
-        String dbPassword = "root";
+        String dbPassword = "whig,worse:selfCS@";
         String backupPath = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\sql_scripts\\Backup_tables.sql";
 
         try {

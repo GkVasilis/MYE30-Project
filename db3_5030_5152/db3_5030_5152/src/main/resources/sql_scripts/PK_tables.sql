@@ -1,38 +1,27 @@
-CREATE TABLE journals {
-    journal_ID INT NOT NULL AUTO_ΙNCREMENT,
+CREATE TABLE journals
+(
+    journal_ID   INT NOT NULL,
     journal_name VARCHAR(100),
-    publisher VARCHAR(100),
+    publisher    VARCHAR(100),
     PRIMARY KEY (journal_ID)
-    };
+) ENGINE=InnoDB;
 
-CREATE TABLE conferences {
-    conference_ID INT NOT NULL AUTO_ΙNCREMENT,
+CREATE TABLE conferences
+(
+    conference_ID   INT NOT NULL,
     conference_name VARCHAR(100),
     PRIMARY KEY (conference_ID)
-    };
+) ENGINE=InnoDB;
 
-CREATE TABLE authors {
-    author_ID INT NOT NULL AUTO_ΙNCREMENT,
+CREATE TABLE authors
+(
+    author_ID   INT          NOT NULL,
     author_name VARCHAR(100),
-    article_ID INT NOT NULL,
-    title VARCHAR(100) NOT NULL,
-    PRIMARY KEY (author_ID,author_name, article_ID)
-    FOREIGN KEY (article_ID, title)
-    REFERENCES articles(article_ID, title)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
-
-/*
-CREATE TABLE author_articles {
-    author_ID INT NOT NULL,
-    article_ID INT NOT NULL,
-    PRIMARY KEY (author_ID, article_ID),
-    FOREIGN KEY (author_ID)
-    REFERENCES authors(author_ID)
-    ON DELETE CASCADE ON UPDATE CASCADE,
+    article_ID  INT          NOT NULL,
+    title       VARCHAR(100) NOT NULL,
+    PRIMARY KEY (author_ID, author_name, article_ID),
     FOREIGN KEY (article_ID)
     REFERENCES articles(article_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
-};*/
-
+) ENGINE=InnoDB;
 

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "journal_rankings")
+@IdClass(JournalRanking.class)
 public class JournalRanking {
 
     @Id
@@ -11,7 +12,7 @@ public class JournalRanking {
     private int journal_ID;
 
     @Id
-    @Column(name = "rank")
+    @Column(name = "j_rank")
     private int rank;
 
     @Id

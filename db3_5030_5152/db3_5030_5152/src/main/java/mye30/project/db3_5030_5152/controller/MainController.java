@@ -28,14 +28,14 @@ public class MainController {
 
     @GetMapping("/homeMenu")
     public String getHomeMenu(Model model) {
-        return "Home Menu";
+        return "HomeMenu";
     }
 
     @GetMapping("/listJournals")
     public String getListJournals(Model model) {
         List<String> journalList = journalService.findAllJournals();
         model.addAttribute("Journals", journalList);
-        return "List of Journals";
+        return "ListOfJournals";
     }
 
     @GetMapping("/listConferences")
@@ -188,7 +188,7 @@ public class MainController {
         model.addAttribute("authorArticles", authorArticles);
         model.addAttribute("authAvgArticlesByYear", authAvgArticlesByYear);
 
-        return "Author Profile";
+        return "AuthorProfile";
     }
 
     // Years
@@ -225,13 +225,15 @@ public class MainController {
         return "Year Profile";
     }
 
-    // Charts
+    // LINE CHARTS
 
     @GetMapping("/lineCharts")
     public String getLineCharts(
             @RequestParam(value = "journalNames", required = false) List<String> journalNames,
             @RequestParam(value = "conferenceNames", required = false) List<String> conferenceNames,
             @RequestParam(value = "authorNames", required = false) List<String> authorNames,
+            @RequestParam(value = "journalCategories", required = false) List<String> journalCategories,
+            @RequestParam(value = "conferenceCategories", required = false) List<String> conferenceCategories,
             @RequestParam(value = "minYear", required = false) Integer minYear,
             @RequestParam(value = "maxYear", required = false) Integer maxYear,
             Model model) {
@@ -248,13 +250,17 @@ public class MainController {
         // 2. Extract Author Counts per Year (Uses if-else if)
         extractAuthorCounts(journalNames, conferenceNames, startYear, endYear, combinedChartData);
 
+        extractArticleCountsByCategory(journalCategories, conferenceCategories, combinedChartData);
+
         // Chronological sort so D3 connects points seamlessly from left to right
-        combinedChartData.sort(Comparator.comparing(m -> (String) m.get("date")));
+        combinedChartData.sort(Comparator.comparing(m -> (String) m.get("years").toString()));//todo intValue()
 
         // Keep inputs on the UI model to pre-populate inputs/text filters
         model.addAttribute("selectedJournals", journalNames);
         model.addAttribute("selectedConferences", conferenceNames);
         model.addAttribute("selectedAuthors", authorNames);
+        model.addAttribute("selectedJournalsCategories", journalCategories);
+        model.addAttribute("selectedConferencesCategories", conferenceCategories);
         model.addAttribute("minYear", minYear);
         model.addAttribute("maxYear", maxYear);
 
@@ -269,14 +275,8 @@ public class MainController {
         return "Line Chart";
     }
 
-// =========================================================================
-// Private Generic  Helper Methods (Symmetric and Database-Driven)
-// =========================================================================
 
-    /**
-     * Extracts article counts by year for EITHER journals OR conferences.
-     */
-    private void extractArticleCounts(List<String> journalNames, List<String> authorNames, List<String> conferenceNames,
+    private void extractArticleCounts(List<String> journalNames, List<String> conferenceNames, List<String> authorNames,
                                       int startYear, int endYear, List<Map<String, Object>> targetList) {
 
         if (journalNames != null && !journalNames.isEmpty()) {
@@ -288,9 +288,9 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("journals", jName);
+                                dataPoint.put("name", jName);
                                 dataPoint.put("years", year);
-                                dataPoint.put("numOfArticles", ((Number) row[1]).longValue());
+                                dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
                             }
                         }
@@ -308,9 +308,9 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("conference", cName);
+                                dataPoint.put("name", cName);
                                 dataPoint.put("years", year);
-                                dataPoint.put("numOfArticles", ((Number) row[1]).longValue());
+                                dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
                             }
                         }
@@ -328,9 +328,9 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("author", aName);
+                                dataPoint.put("name", aName);
                                 dataPoint.put("years", year);
-                                dataPoint.put("numOfArticles", ((Number) row[1]).longValue());
+                                dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
                             }
                         }
@@ -340,9 +340,7 @@ public class MainController {
         }
     }
 
-    /**
-     * Extracts unique author counts by year for EITHER journals OR conferences.
-     */
+
     private void extractAuthorCounts(List<String> journalNames, List<String> conferenceNames,
                                      int startYear, int endYear, List<Map<String, Object>> targetList) {
 
@@ -351,14 +349,27 @@ public class MainController {
                 List<Object[]> numOfJournalAuthorsByYear = journalService.findNumOfJournalAuthorsByYear(jName);
                 if (numOfJournalAuthorsByYear != null) {
                     for (Object[] row : numOfJournalAuthorsByYear) {
-                        if (row != null && row.length >= 2) {
+                        if (row != null && row.length >= 3) { // Changed to >= 3 because your query now returns 3 columns
+
                             int year = ((Number) row[0]).intValue();
+
                             if (year >= startYear && year <= endYear) {
-                                Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("journals", jName);
-                                dataPoint.put("years", year);
-                                dataPoint.put("numOfArticles", ((Number) row[1]).longValue());
-                                targetList.add(dataPoint);
+                                long totalAuthors = ((Number) row[1]).longValue();    // COUNT(ath.author_ID)
+                                long distinctAuthors = ((Number) row[2]).longValue(); // COUNT(DISTINCT (ath.author_ID))
+
+                                // LINE 1: Data point for Total Authors
+                                Map<String, Object> totalPoint = new HashMap<>();
+                                totalPoint.put("name", jName + " (Total Authors)"); // Line Identity
+                                totalPoint.put("years", year);               // X-Axis
+                                totalPoint.put("number", totalAuthors);          // Y-Axis
+                                targetList.add(totalPoint);
+
+                                // LINE 2: Data point for Distinct Authors
+                                Map<String, Object> distinctPoint = new HashMap<>();
+                                distinctPoint.put("name", jName + " (Distinct Authors)"); // Line Identity
+                                distinctPoint.put("years", year);                  // X-Axis
+                                distinctPoint.put("number", distinctAuthors);          // Y-Axis
+                                targetList.add(distinctPoint);
                             }
                         }
                     }
@@ -371,14 +382,26 @@ public class MainController {
                 List<Object[]> numOfConferenceAuthorsByYear = conferenceService.findNumOfConferenceAuthorsByYear(cName);
                 if (numOfConferenceAuthorsByYear != null) {
                     for (Object[] row : numOfConferenceAuthorsByYear) {
-                        if (row != null && row.length >= 2) {
+                        if (row != null && row.length >= 3) {
                             int year = ((Number) row[0]).intValue();
+
                             if (year >= startYear && year <= endYear) {
-                                Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("conference", cName);
-                                dataPoint.put("years", year);
-                                dataPoint.put("numOfArticles", ((Number) row[1]).longValue());
-                                targetList.add(dataPoint);
+                                long totalAuthors = ((Number) row[1]).longValue();    // COUNT(ath.author_ID)
+                                long distinctAuthors = ((Number) row[2]).longValue(); // COUNT(DISTINCT (ath.author_ID))
+
+                                // LINE 1: Data point for Total Authors
+                                Map<String, Object> totalPoint = new HashMap<>();
+                                totalPoint.put("name", cName + " (Total Authors)"); // Line Identity
+                                totalPoint.put("years", year);               // X-Axis
+                                totalPoint.put("number", totalAuthors);          // Y-Axis
+                                targetList.add(totalPoint);
+
+                                // LINE 2: Data point for Distinct Authors
+                                Map<String, Object> distinctPoint = new HashMap<>();
+                                distinctPoint.put("name", cName + " (Distinct Authors)"); // Line Identity
+                                distinctPoint.put("years", year);                  // X-Axis
+                                distinctPoint.put("number", distinctAuthors);          // Y-Axis
+                                targetList.add(distinctPoint);
                             }
                         }
                     }
@@ -387,9 +410,153 @@ public class MainController {
         }
     }
 
+    private void extractArticleCountsByCategory(List<String> journalCategory, List<String> conferenceCategory,
+                                       List<Map<String, Object>> targetList) {
 
+        if (journalCategory != null && !journalCategory.isEmpty()) {
+            for (String categName : journalCategory) {
+                List<Object[]> numOfJournalArticlesByCategory = journalService.findNumOfJournalByCategory(categName);
+                if (numOfJournalArticlesByCategory != null) {
+                    for (Object[] row : numOfJournalArticlesByCategory) {
+                        if (row != null && row.length >= 2) {
+                            Map<String, Object> dataPoint = new HashMap<>();
+                            dataPoint.put("name", categName);
+                            dataPoint.put("years", ((Number) row[0]).intValue());
+                            dataPoint.put("number", ((Number) row[1]).longValue());
+                            targetList.add(dataPoint);
+                        }
+                    }
+                }
+            }
+        }
+        else if (conferenceCategory != null && !conferenceCategory.isEmpty()) {
+            for (String categName : conferenceCategory) {
+                // MATCHING INNER LOGIC: Utilizing your pre-aggregated database method!
+                List<Object[]> numOfConferenceArticlesByCategory = conferenceService.findNumOfConferenceByCategory(categName);
+                if (numOfConferenceArticlesByCategory != null) {
+                    for (Object[] row : numOfConferenceArticlesByCategory) {
+                        if (row != null && row.length >= 2) {
+                            Map<String, Object> dataPoint = new HashMap<>();
+                            dataPoint.put("name", categName);
+                            dataPoint.put("years", ((Number) row[0]).intValue());
+                            dataPoint.put("number", ((Number) row[1]).longValue());
+                            targetList.add(dataPoint);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    // BAR CHARTS
 
+    @GetMapping("/groupedBarCharts")
+    public String getGroupedBarCharts(
+            @RequestParam(value = "journalNames", required = false) List<String> journalNames,
+            @RequestParam(value = "conferenceNames", required = false) List<String> conferenceNames,
+            @RequestParam(value = "publisherNames", required = false) List<String> publisherNames,
+            Model model) {
+
+        List<Map<String, Object>> groupedBarDataset = new ArrayList<>();
+
+        // Route 1: Process Journals exclusively if provided
+        if (journalNames != null && !journalNames.isEmpty()) {
+            for (String jName : journalNames) {
+                List<Article> totalArticlesList = journalService.findJournalArticles(jName);
+                long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
+                int avgArticlesByYear = journalService.findAvgJournalArticles(jName);
+                int avgAuthorsPerArticle = journalService.findAvgAuthorsByJournal(jName);
+
+                Map<String, Object> bar1 = new HashMap<>();
+                bar1.put("state", jName + " (Journal)");
+                bar1.put("age", "Total Articles Volume");
+                bar1.put("population", totalArticlesCount);
+                groupedBarDataset.add(bar1);
+
+                Map<String, Object> bar2 = new HashMap<>();
+                bar2.put("state", jName + " (Journal)");
+                bar2.put("age", "Avg Articles/Year");
+                bar2.put("population", (long) avgArticlesByYear);
+                groupedBarDataset.add(bar2);
+
+                Map<String, Object> bar3 = new HashMap<>();
+                bar3.put("state", jName + " (Journal)");
+                bar3.put("age", "Avg Authors/Article");
+                bar3.put("population", (long) avgAuthorsPerArticle);
+                groupedBarDataset.add(bar3);
+            }
+        }
+        // Route 2: Fall back to Conferences if Journals are empty
+        else if (conferenceNames != null && !conferenceNames.isEmpty()) {
+            for (String cName : conferenceNames) {
+                List<Article> totalArticlesList = conferenceService.findConferenceArticles(cName);
+                long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
+                int avgArticlesByYear = conferenceService.findAvgConferenceArticles(cName);
+                int avgAuthorsPerArticle = conferenceService.findAvgAuthorsByConference(cName);
+
+                Map<String, Object> bar1 = new HashMap<>();
+                bar1.put("state", cName + " (Conference)");
+                bar1.put("age", "Total Articles Volume");
+                bar1.put("population", totalArticlesCount);
+                groupedBarDataset.add(bar1);
+
+                Map<String, Object> bar2 = new HashMap<>();
+                bar2.put("state", cName + " (Conference)");
+                bar2.put("age", "Avg Articles/Year");
+                bar2.put("population", (long) avgArticlesByYear);
+                groupedBarDataset.add(bar2);
+
+                Map<String, Object> bar3 = new HashMap<>();
+                bar3.put("state", cName + " (Conference)");
+                bar3.put("age", "Avg Authors/Article");
+                bar3.put("population", (long) avgAuthorsPerArticle);
+                groupedBarDataset.add(bar3);
+            }
+        }
+        // Route 3: Fall back to Publishers if both Journals and Conferences are empty
+        else if (publisherNames != null && !publisherNames.isEmpty()) {
+            for (String pName : publisherNames) {
+                // Executing your new aggregate query method here
+                int publisherPublicationsCount = journalService.findPublisherPublications(pName);
+
+                // Bar 1: Total Publisher Volume (Mapped directly to your query)
+                Map<String, Object> bar1 = new HashMap<>();
+                bar1.put("state", pName + " (Publisher)");
+                bar1.put("age", "Total Articles Volume");
+                bar1.put("population", (long) publisherPublicationsCount);
+                groupedBarDataset.add(bar1);
+
+                // Bar 2: Constant Baseline (Keeps chart categories uniform across the UI views)
+                Map<String, Object> bar2 = new HashMap<>();
+                bar2.put("state", pName + " (Publisher)");
+                bar2.put("age", "Avg Articles/Year");
+                bar2.put("population", 0L);
+                groupedBarDataset.add(bar2);
+
+                // Bar 3: Constant Baseline
+                Map<String, Object> bar3 = new HashMap<>();
+                bar3.put("state", pName + " (Publisher)");
+                bar3.put("age", "Avg Authors/Article");
+                bar3.put("population", 0L);
+                groupedBarDataset.add(bar3);
+            }
+        }
+
+        model.addAttribute("selectedJournals", journalNames);
+        model.addAttribute("selectedConferences", conferenceNames);
+        model.addAttribute("selectedPublishers", publisherNames);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            model.addAttribute("barChartDataJson", mapper.writeValueAsString(groupedBarDataset));
+        } catch (Exception e) {
+            model.addAttribute("barChartDataJson", "[]");
+        }
+
+        return "BarChart";
+    }
+
+    // SCATTER PLOTS
 
 
 }

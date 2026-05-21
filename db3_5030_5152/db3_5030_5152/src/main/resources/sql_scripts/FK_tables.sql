@@ -1,47 +1,49 @@
-CREATE TABLE journal_articles {
-    article_ID INT NOT NULL,
-    title VARCHAR(100),
-    journal_ID INT NOT NULL,
-    journal_name VARCHAR(100),
-    publisher VARCHAR(100),
-    cdrom VARCHAR(100),
-    crossref VARCHAR(100),
-    mdate DATE,
+CREATE TABLE journal_articles
+(
+    article_ID     INT NOT NULL,
+    title          VARCHAR(100),
+    journal_ID     INT NOT NULL,
+    journal_name   VARCHAR(100),
+    publisher      VARCHAR(100),
+    cdrom          VARCHAR(100),
+    crossref       VARCHAR(100),
+    mdate          DATE,
     published_year INT NOT NULL,
-    url VARCHAR(100),
-    pages VARCHAR(100),
-    publtype VARCHAR(100),
-    journal_key VARCHAR(100),
+    url            VARCHAR(100),
+    pages          VARCHAR(100),
+    publtype       VARCHAR(100),
+    journal_key    VARCHAR(100),
     PRIMARY KEY (journal_ID),
-    FOREIGN KEY (journal_ID, journal_name, publisher) REFERENCES journals(journal_ID, journal_name, publisher)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (article_ID, title) REFERENCES articles(article_ID, title)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
+    FOREIGN KEY (journal_ID) REFERENCES journals (journal_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (article_ID) REFERENCES articles (article_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
-CREATE TABLE conference_articles {
-    article_ID INT NOT NULL,
-    conference_ID INT NOT NULL,
+CREATE TABLE conference_articles
+(
+    article_ID      INT NOT NULL,
+    conference_ID   INT NOT NULL,
     conference_name VARCHAR(100),
-    title VARCHAR(100),
-    cdrom VARCHAR(100),
-    crossref VARCHAR(100),
-    publtype VARCHAR(100),
-    url VARCHAR(100),
-    pages VARCHAR(100),
-    mdate DATE,
-    published_year INT NOT NULL,
-    conference_key VARCHAR(100),
-    PRIMARY KEY (conference_ID) ,
-    FOREIGN KEY (article_ID,title) REFERENCES aricles(article_ID,title)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (conference_ID,conference_name) REFERENCES conferences (conference_ID,conference_name)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
+    title           VARCHAR(100),
+    cdrom           VARCHAR(100),
+    crossref        VARCHAR(100),
+    publtype        VARCHAR(100),
+    url             VARCHAR(100),
+    pages           VARCHAR(100),
+    mdate           DATE,
+    published_year  INT NOT NULL,
+    conference_key  VARCHAR(100),
+    PRIMARY KEY (conference_ID),
+    FOREIGN KEY (article_ID) REFERENCES articles(article_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (conference_ID) REFERENCES conferences (conference_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
-CREATE journal_rankings {
+CREATE TABLE journal_rankings (
     journal_ID INT NOT NULL,
-    rank INT NOT NULL,
+    j_rank INT NOT NULL,
     title VARCHAR(100) NOT NULL,
     bestSubjectArea VARCHAR(100),
     bestSubjectRank VARCHAR(100),
@@ -51,35 +53,28 @@ CREATE journal_rankings {
     PRIMARY KEY (journal_ID, rank, title),
     FOREIGN KEY (journal_ID) REFERENCES journals(journal_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
-};
+) ENGINE=InnoDB;
 
-CREATE TABLE conference_rankings {
+CREATE TABLE conference_rankings
+(
     conference_ID INT NOT NULL,
-    conf_rank_ID INT NOT NULL,
-    title VARCHAR(100),
-    rank INT,
-    primaryFoR VARCHAR(100),
+    conf_rank_ID  INT NOT NULL,
+    title         VARCHAR(100),
+    c_rank        VARCHAR(100),
+    primaryFoR    VARCHAR(100),
     PRIMARY KEY (conf_rank_ID),
-    FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
-/*
-CREATE TABLE primaryFoRs {
-    conf_rank_ID INT NOT NULL,
-    primaryFor VARCHAR(100),
-    PRIMARY KEY (conf_rank_ID, primaryFor),
-    FOREIGN KEY (conf_rank_ID) REFERENCES conference_rankings(conf_rank_ID)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
-*/
+    FOREIGN KEY (conference_ID) REFERENCES conferences (conference_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 
-CREATE TABLE conference_categories {
+CREATE TABLE conference_categories
+(
     /*conference_ID INT NOT NULL ,*/
     primaryFor VARCHAR(100),
-    title VARCHAR(100),
-    PRIMARY KEY (conference_ID, title),
-    FOREIGN KEY (conference_ID) REFERENCES conferences(conference_ID)
-    ON DELETE CASCADE ON UPDATE CASCADE
-};
+    title      VARCHAR(100),
+    PRIMARY KEY (primaryFor, title),
+    FOREIGN KEY (primaryFor) REFERENCES conference_rankings (primaryFor)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 

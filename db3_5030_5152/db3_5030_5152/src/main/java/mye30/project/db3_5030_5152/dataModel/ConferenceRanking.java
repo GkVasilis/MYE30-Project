@@ -16,7 +16,7 @@ public class ConferenceRanking{
     @Column(name = "title")
     private String title;
 
-    @Column(name = "rank")
+    @Column(name = "c_rank")
     private String rank;
 
 
