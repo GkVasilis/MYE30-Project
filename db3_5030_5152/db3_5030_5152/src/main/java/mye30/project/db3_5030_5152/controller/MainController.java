@@ -85,12 +85,12 @@ public class MainController {
     private void printJournalStats(String name, Model model){
         List<Object[]> firstYear = journalService.findJournalByFirstYear(name);
         List<Object[]> lastYear = journalService.findJournalByLastYear(name);
-        int numOfAuthors = journalService.findNumOfJournalAuthors(name);
-        int avgAuthorsByJournal = journalService.findAvgAuthorsByJournal(name);
-        int avgAuthorsByYear = journalService.findAvgAuthorsByYear(name);
+        Integer numOfAuthors = journalService.findNumOfJournalAuthors(name);
+        Double avgAuthorsByJournal = journalService.findAvgAuthorsByJournal(name);
+        Double avgAuthorsByYear = journalService.findAvgAuthorsByYear(name);
         List<Article> articles = journalService.findJournalArticles(name);
         List<Author> authors = journalService.findJournalAuthors(name);
-        int avgJA = journalService.findAvgJournalArticles(name);
+        Double avgJA = journalService.findAvgJournalArticles(name);
         model.addAttribute("YearFirstJournalPublished", firstYear);
         model.addAttribute("YearLastJournalPublished", lastYear);
         model.addAttribute("NumberJournalAuthors", numOfAuthors);
@@ -102,12 +102,12 @@ public class MainController {
     }
 
     private void printJournalStatsRange(String name, int min, int max, Model model){
-        int numOfAuthors = journalService.findNumOfJournalAuthorsRange(name, min, max);
-        int avgAuthorsByJournal = journalService.findAvgAuthorsByJournalRange(name, min, max);
-        int avgAuthorsByYear = journalService.findAvgAuthorsByYearRange(name, min, max);
+        Integer numOfAuthors = journalService.findNumOfJournalAuthorsRange(name, min, max);
+        Double avgAuthorsByJournal = journalService.findAvgAuthorsByJournalRange(name, min, max);
+        Double avgAuthorsByYear = journalService.findAvgAuthorsByYearRange(name, min, max);
         List<Article> articles = journalService.findJournalArticlesRange(name, min, max);
         List<Author> authors = journalService.findJournalAuthorsRange(name, min, max);
-        int avgJA = journalService.findAvgJournalArticlesRange(name, min, max);
+        Double avgJA = journalService.findAvgJournalArticlesRange(name, min, max);
 
         model.addAttribute("NumberJournalAuthors", numOfAuthors);
         model.addAttribute("AvgAuthorsOfJournal ", avgAuthorsByJournal);
@@ -143,12 +143,12 @@ public class MainController {
     private void printConferenceStats(String name, Model model){
         List<Object[]> firstYear = conferenceService.findConferenceByFirstYear(name);
         List<Object[]> lastYear = conferenceService.findConferenceByLastYear(name);
-        int numOfAuthors = conferenceService.findNumOfConferenceAuthors(name);
-        int avgAuthorsByConference = conferenceService.findAvgAuthorsByConference(name);
-        int avgAuthorsByYear = conferenceService.findAvgAuthorsByYear(name);
+        Integer numOfAuthors = conferenceService.findNumOfConferenceAuthors(name);
+        Double avgAuthorsByConference = conferenceService.findAvgAuthorsByConference(name);
+        Double avgAuthorsByYear = conferenceService.findAvgAuthorsByYear(name);
         List<Article> articles = conferenceService.findConferenceArticles(name);
         List<Author> authors = conferenceService.findConferenceAuthors(name);
-        int avgJA = conferenceService.findAvgConferenceArticles(name);
+        Double avgJA = conferenceService.findAvgConferenceArticles(name);
         model.addAttribute("YearFirstConferencePublished", firstYear);
         model.addAttribute("YearLastConferencePublished", lastYear);
         model.addAttribute("NumberConferenceAuthors", numOfAuthors);
@@ -160,12 +160,12 @@ public class MainController {
     }
 
     private void printConferenceStatsRange(String name, int min, int max, Model model){
-        int numOfAuthors = conferenceService.findNumOfConferenceAuthorsRange(name, min, max);
-        int avgAuthorsByConference = conferenceService.findAvgAuthorsByConferenceRange(name, min, max);
-        int avgAuthorsByYear = conferenceService.findAvgAuthorsByYearRange(name, min, max);
+        Integer numOfAuthors = conferenceService.findNumOfConferenceAuthorsRange(name, min, max);
+        Double avgAuthorsByConference = conferenceService.findAvgAuthorsByConferenceRange(name, min, max);
+        Double avgAuthorsByYear = conferenceService.findAvgAuthorsByYearRange(name, min, max);
         List<Article> articles = conferenceService.findConferenceArticlesRange(name, min, max);
         List<Author> authors = conferenceService.findConferenceAuthorsRange(name, min, max);
-        int avgJA = conferenceService.findAvgConferenceArticlesRange(name, min, max);
+        Double avgJA = conferenceService.findAvgConferenceArticlesRange(name, min, max);
 
         model.addAttribute("NumberConferenceAuthors", numOfAuthors);
         model.addAttribute("AvgAuthorsofConference ", avgAuthorsByConference);
@@ -182,7 +182,7 @@ public class MainController {
         int firstYear = authorService.findFirstPublishedYear(authorName);
         int lastYear = authorService.findLastPublishedYear(authorName);
         List<Article> authorArticles = authorService.findAllArticles(authorName);
-        int authAvgArticlesByYear = authorService.findAvgArticlesByYear(authorName);
+        Double authAvgArticlesByYear = authorService.findAvgArticlesByYear(authorName);
         model.addAttribute("firstYear", firstYear);
         model.addAttribute("lastYear", lastYear);
         model.addAttribute("authorArticles", authorArticles);
@@ -195,9 +195,9 @@ public class MainController {
 
     @GetMapping("/yearProfile")
     public String getYearProfile(@RequestParam("yearValue") Integer yearValue, @RequestParam(value = "journalName", required = false) String journalName, @RequestParam(value = "conferenceName", required = false) String conferenceName, @RequestParam(value = "authorName", required = false) String authorName, Model model) {
-        int publishedArticles = yearService.findPublishedArticles(yearValue);
-        int numOfJournals = yearService.findNumOfJournals(yearValue);
-        int numOfConferences = yearService.findNumOfConferences(yearValue);
+        Integer publishedArticles = yearService.findPublishedArticles(yearValue);
+        Integer numOfJournals = yearService.findNumOfJournals(yearValue);
+        Integer numOfConferences = yearService.findNumOfConferences(yearValue);
         List<Object[]> numOfAuthors = yearService.findNumOfAuthors(yearValue);
 
         model.addAttribute("publishedArticles", publishedArticles);
@@ -464,8 +464,8 @@ public class MainController {
             for (String jName : journalNames) {
                 List<Article> totalArticlesList = journalService.findJournalArticles(jName);
                 long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
-                int avgArticlesByYear = journalService.findAvgJournalArticles(jName);
-                int avgAuthorsPerArticle = journalService.findAvgAuthorsByJournal(jName);
+                Double avgArticlesByYear = journalService.findAvgJournalArticles(jName);
+                Double avgAuthorsPerArticle = journalService.findAvgAuthorsByJournal(jName);
 
                 Map<String, Object> bar1 = new HashMap<>();
                 bar1.put("state", jName + " (Journal)");
@@ -476,13 +476,13 @@ public class MainController {
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", jName + " (Journal)");
                 bar2.put("age", "Avg Articles/Year");
-                bar2.put("population", (long) avgArticlesByYear);
+                bar2.put("population", (double) avgArticlesByYear);
                 groupedBarDataset.add(bar2);
 
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", jName + " (Journal)");
                 bar3.put("age", "Avg Authors/Article");
-                bar3.put("population", (long) avgAuthorsPerArticle);
+                bar3.put("population", (double) avgAuthorsPerArticle);
                 groupedBarDataset.add(bar3);
             }
         }
@@ -491,8 +491,8 @@ public class MainController {
             for (String cName : conferenceNames) {
                 List<Article> totalArticlesList = conferenceService.findConferenceArticles(cName);
                 long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
-                int avgArticlesByYear = conferenceService.findAvgConferenceArticles(cName);
-                int avgAuthorsPerArticle = conferenceService.findAvgAuthorsByConference(cName);
+                Double avgArticlesByYear = conferenceService.findAvgConferenceArticles(cName);
+                Double avgAuthorsPerArticle = conferenceService.findAvgAuthorsByConference(cName);
 
                 Map<String, Object> bar1 = new HashMap<>();
                 bar1.put("state", cName + " (Conference)");
@@ -503,13 +503,13 @@ public class MainController {
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", cName + " (Conference)");
                 bar2.put("age", "Avg Articles/Year");
-                bar2.put("population", (long) avgArticlesByYear);
+                bar2.put("population", (double) avgArticlesByYear);
                 groupedBarDataset.add(bar2);
 
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", cName + " (Conference)");
                 bar3.put("age", "Avg Authors/Article");
-                bar3.put("population", (long) avgAuthorsPerArticle);
+                bar3.put("population", (double) avgAuthorsPerArticle);
                 groupedBarDataset.add(bar3);
             }
         }

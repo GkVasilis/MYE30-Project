@@ -44,20 +44,18 @@ public class JournalServiceImp implements JournalService {
         return repo.findJournalByFirstYear(journal_name);
     }
 
-
     @Override
-    public int findNumOfJournalAuthors(String journal_name){
+    public Integer findNumOfJournalAuthors(String journal_name){
         return repo.findNumOfJournalAuthors(journal_name);
     }
 
 
     @Override
-    public int findAvgAuthorsByJournal(String journal_name){
+    public Double findAvgAuthorsByJournal(String journal_name){
         return repo.findAvgAuthorsByJournal(journal_name);
     }
 
-    public int findAvgAuthorsByYear(String journal_name){
-
+    public Double findAvgAuthorsByYear(String journal_name){
         return repo.findAvgAuthorsByYear(journal_name);
     }
 
@@ -67,26 +65,22 @@ public class JournalServiceImp implements JournalService {
 
     public List<Author> findJournalAuthors(String journal_name){
         return repo.findJournalAuthors(journal_name);
-
     }
 
-    public int findAvgJournalArticles(String journal_name){
-
+    public Double findAvgJournalArticles(String journal_name){
         return repo.findAvgJournalArticles(journal_name);
     }
 
-    public int findNumOfJournalAuthorsRange(String journal_name, int y1, int y2){
-
+    public Integer findNumOfJournalAuthorsRange(String journal_name, int y1, int y2){
         return repo.findNumOfJournalAuthorsRange(journal_name,y1,y2);
     }
 
-    public int findAvgAuthorsByJournalRange(String journal_name, int y1, int y2){
-
+    public Double findAvgAuthorsByJournalRange(String journal_name, int y1, int y2){
         return repo.findAvgAuthorsByJournalRange(journal_name,y1,y2);
     }
 
     @Override
-    public int findAvgAuthorsByYearRange(String journal_name, int y1, int y2) {
+    public Double findAvgAuthorsByYearRange(String journal_name, int y1, int y2) {
         return repo.findAvgAuthorsByYearRange(journal_name, y1, y2);
     }
 
@@ -101,7 +95,7 @@ public class JournalServiceImp implements JournalService {
     }
 
     @Override
-    public int findAvgJournalArticlesRange(String journal_name, int y1, int y2) {
+    public Double findAvgJournalArticlesRange(String journal_name, int y1, int y2) {
         return repo.findAvgJournalArticlesRange(journal_name, y1, y2);
     }
 
@@ -113,7 +107,7 @@ public class JournalServiceImp implements JournalService {
     }
 
     @Override
-    public int findPublisherPublications(String publisher) {
+    public Integer findPublisherPublications(String publisher) {
         return repo.findPublisherPublications(publisher);
     }
 

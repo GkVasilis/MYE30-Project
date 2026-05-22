@@ -17,29 +17,29 @@ public interface ConferenceService {
 
     List<Object[]> findConferenceByFirstYear(String conf_name);
 
-    int findNumOfConferenceAuthors(String conf_name);
+    Integer findNumOfConferenceAuthors(String conf_name);
 
-    int findAvgAuthorsByConference(String conf_name);
+    Double findAvgAuthorsByConference(String conf_name);
 
-    int findAvgAuthorsByYear(String conf_name);
+    Double findAvgAuthorsByYear(String conf_name);
 
     List<Article>  findConferenceArticles(String conf_name);
 
     List<Author> findConferenceAuthors(String conf_name);
 
-    int findAvgConferenceArticles(String conf_name);
+    Double findAvgConferenceArticles(String conf_name);
 
-    int findNumOfConferenceAuthorsRange(String conf_name, int y1, int y2);
+    Integer findNumOfConferenceAuthorsRange(String conf_name, int y1, int y2);
 
-    int findAvgAuthorsByConferenceRange(String conf_name, int y1, int y2);
+    Double findAvgAuthorsByConferenceRange(String conf_name, int y1, int y2);
 
-    int findAvgAuthorsByYearRange(String conf_name, int y1, int y2);
+    Double findAvgAuthorsByYearRange(String conf_name, int y1, int y2);
 
     List<Article> findConferenceArticlesRange(String conf_name, int y1, int y2);
 
     List<Author> findConferenceAuthorsRange(String conf_name, int y1, int y2);
 
-    int findAvgConferenceArticlesRange(String conf_name, int y1, int y2);
+    Double findAvgConferenceArticlesRange(String conf_name, int y1, int y2);
 
     // TODO REPORT
 

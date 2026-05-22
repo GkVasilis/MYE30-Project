@@ -11,11 +11,11 @@ public interface YearService {
 
     List<Integer> findAllYears();
 
-    int findPublishedArticles(int year);
+    Integer findPublishedArticles(int year);
 
-    int findNumOfJournals(int year);
+    Integer findNumOfJournals(int year);
 
-    int findNumOfConferences(int year);
+    Integer findNumOfConferences(int year);
 
     List<Object[]> findNumOfAuthors(int year);
 

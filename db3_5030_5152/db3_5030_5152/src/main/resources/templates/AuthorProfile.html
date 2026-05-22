@@ -59,7 +59,7 @@
         <tr th:each="article : ${authorArticles}">
           <td th:text="${article.article_ID}">ID</td>
           <td th:text="${article.title}" style="font-weight: 500;">Title</td>
-          <td th:text="${article.year}">2026</td>
+          <td th:text="${article.published_year}">2026</td>
         </tr>
         <tr th:if="${authorArticles == null || authorArticles.isEmpty()}">
           <td colspan="3" style="text-align: center; color: #a0aec0;">No works registered for this researcher.</td>

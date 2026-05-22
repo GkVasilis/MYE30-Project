@@ -49,18 +49,18 @@ public class ConferenceServiceImp implements ConferenceService {
     }
 
     @Override
-    public int findNumOfConferenceAuthors(String conf_name){
+    public Integer findNumOfConferenceAuthors(String conf_name){
         return repo.findNumOfConferenceAuthors(conf_name);
     }
 
     @Override
-    public int findAvgAuthorsByConference(String conf_name){
+    public Double findAvgAuthorsByConference(String conf_name){
         return repo.findAvgAuthorsByConference(conf_name);
     }
 
     @Override
-    public int findAvgAuthorsByYear(String conf_name) {
-        return repo.findNumOfConferenceAuthors(conf_name);
+    public Double findAvgAuthorsByYear(String conf_name) {
+        return repo.findAvgAuthorsByYear(conf_name);
     }
 
     @Override
@@ -74,22 +74,22 @@ public class ConferenceServiceImp implements ConferenceService {
     }
 
     @Override
-    public int findAvgConferenceArticles(String conf_name) {
+    public Double findAvgConferenceArticles(String conf_name) {
         return repo.findAvgConferenceArticles(conf_name);
     }
 
     @Override
-    public int findNumOfConferenceAuthorsRange(String conf_name, int y1, int y2) {
+    public Integer findNumOfConferenceAuthorsRange(String conf_name, int y1, int y2) {
         return repo.findNumOfConferenceAuthorsRange(conf_name, y1, y2);
     }
 
     @Override
-    public int findAvgAuthorsByConferenceRange(String conf_name, int y1, int y2) {
+    public Double findAvgAuthorsByConferenceRange(String conf_name, int y1, int y2) {
         return repo.findAvgAuthorsByConferenceRange(conf_name, y1, y2);
     }
 
     @Override
-    public int findAvgAuthorsByYearRange(String conf_name, int y1, int y2) {
+    public Double findAvgAuthorsByYearRange(String conf_name, int y1, int y2) {
         return repo.findAvgAuthorsByYearRange(conf_name, y1, y2);
     }
 
@@ -104,7 +104,7 @@ public class ConferenceServiceImp implements ConferenceService {
     }
 
     @Override
-    public int findAvgConferenceArticlesRange(String conf_name, int y1, int y2) {
+    public Double findAvgConferenceArticlesRange(String conf_name, int y1, int y2) {
         return repo.findAvgConferenceArticlesRange(conf_name, y1, y2);
     }
 

@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'a742c5b9-1a35-11f1-83ec-94de80c809eb:1-54733';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'a742c5b9-1a35-11f1-83ec-94de80c809eb:1-62343';
 
 --
 -- Current Database: `mye30_db`
@@ -293,4 +293,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-22 21:18:36
+-- Dump completed on 2026-05-23  0:22:57

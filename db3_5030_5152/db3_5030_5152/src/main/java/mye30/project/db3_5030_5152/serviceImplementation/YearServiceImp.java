@@ -21,23 +21,22 @@ public class YearServiceImp implements YearService {
     }
 
     @Override
-    public int findPublishedArticles(int year){
+    public Integer findPublishedArticles(int year){
         return repo.findPublishedArticles(year);
     }
 
     @Override
-    public int findNumOfJournals(int year){
+    public Integer findNumOfJournals(int year){
         return repo.findNumOfJournals(year);
     }
 
     @Override
-    public int findNumOfConferences(int year){
+    public Integer findNumOfConferences(int year){
         return repo.findNumOfConferences(year);
     }
 
     @Override
     public List<Object[]> findNumOfAuthors(int year){
-
         return repo.findNumOfAuthors(year);
     }
 

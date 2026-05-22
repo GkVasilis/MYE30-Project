@@ -21,12 +21,12 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public int findLastPublishedYear(String author_name) {
+    public Integer findLastPublishedYear(String author_name) {
         return repo.findLastPublishedYear(author_name);
     }
 
     @Override
-    public int findFirstPublishedYear(String author_name) {
+    public Integer findFirstPublishedYear(String author_name) {
         return repo.findFirstPublishedYear(author_name);
     }
 
@@ -41,7 +41,7 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public int findAvgArticlesByYear(String author_name) {
+    public Double findAvgArticlesByYear(String author_name) {
         return repo.findAvgArticlesByYear(author_name);
     }
 }

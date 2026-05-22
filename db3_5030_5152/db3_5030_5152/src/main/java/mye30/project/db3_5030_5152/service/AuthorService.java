@@ -7,15 +7,14 @@ public interface AuthorService {
 
     List<String> findAllAuthors();
 
-    int findLastPublishedYear(String author_name);
+    Integer findLastPublishedYear(String author_name);
 
-    int findFirstPublishedYear(String author_name);
+    Integer findFirstPublishedYear(String author_name);
 
     List<Article> findAllArticles(String author_name);
 
     List<Object[]> findNumArticlesByYear(String author_name);
 
-    int findAvgArticlesByYear(String author_name);
-
+    Double findAvgArticlesByYear(String author_name);
 
 }
