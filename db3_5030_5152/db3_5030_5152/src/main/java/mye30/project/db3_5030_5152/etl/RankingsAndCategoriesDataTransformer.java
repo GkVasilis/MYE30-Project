@@ -11,20 +11,22 @@ public class RankingsAndCategoriesDataTransformer {
 
     public static void main(String[] args) {
 
-        String inputCsvFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\journal_ranking_data_raw.csv";
-        String inputCsvFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\bestSubjectArea.csv";
-        String inputCSVFile3 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\iCore26_KilledColumnsForLoading.csv";
-        String inputTsvFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForJournal.tsv";
-        String inputTsvFile5 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForConference.tsv";
-        String inputXlsxFile6 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\icoreCategories.xlsx";
+        String projectRoot = System.getProperty("user.dir");
 
-        String outputTSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Journal_rankings_Data.tsv";
-        String outputTSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_rankings_Data.tsv";
-        //String outputTSVFile3 = "C:\Users\User\Desktop\MYE30-Project\db3_5030_5152\db3_5030_5152\src\main\\resources\transformed_data\PrimaryFoRs_Data.tsv";
-        String outputTSVFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_Categories_Data.tsv";
+        String inputCsvFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "journal_ranking_data_raw.csv";
+        String inputCsvFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "bestSubjectArea.csv";
+        String inputCSVFile3 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "iCore26_KilledColumnsForLoading.csv";
+        String inputTsvFile4 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForJournal.tsv";
+        String inputTsvFile5 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForConference.tsv";
+        String inputXlsxFile6 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "icoreCategories.xlsx";
+
+        String outputTSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Journal_rankings_Data.tsv";
+        String outputTSVFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Conference_rankings_Data.tsv";
+        //String outputTSVFile3 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "PrimaryFoRs_Data.tsv";
+        String outputTSVFile4 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Conference_Categories_Data.tsv";
 
         String line;
-        String column1 = "journal_ID,"; // Kept exactly from your style logic
+        String column1 = "journal_ID,";
 
         List<String> linesJournalRankings = new ArrayList<>();
         List<String> linesConferenceRankings = new ArrayList<>();
@@ -32,18 +34,16 @@ public class RankingsAndCategoriesDataTransformer {
         List<String> linesConferenceData = new ArrayList<>();
         List<String> linesBestSubjectArea = new ArrayList<>();
 
-        // Maps used to replace slow nested loops and keep your system memory low
         Map<String, String> journalMap = new HashMap<>();
         Map<String, String> conferenceMap = new HashMap<>();
 
-        System.out.println("Transforming rankings data smoothly...");
+        System.out.println("Transforming data...");
 
         // Reads journal_data
         try (BufferedReader br = new BufferedReader(new FileReader(inputTsvFile4))) {
             while ((line = br.readLine()) != null) {
                 linesJournalData.add(line);
 
-                // Build fast-lookup cache matching your formatting rules
                 String[] array = line.split("\t");
                 if (array.length > 1) {
                     String cleanTitle = array[1].toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
@@ -59,7 +59,6 @@ public class RankingsAndCategoriesDataTransformer {
             while ((line = br.readLine()) != null) {
                 linesConferenceData.add(line);
 
-                // Build fast-lookup cache matching your formatting rules
                 String[] array = line.split("\t");
                 if (array.length > 1) {
                     String cleanTitle = array[1].toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
@@ -89,13 +88,11 @@ public class RankingsAndCategoriesDataTransformer {
             while ((line = br.readLine()) != null) {
                 String[] linePieces = line.split(",", -1);
 
-                // .contains logic safely references linesBestSubjectArea to match your exact condition
                 if (linePieces[0] != null && linePieces[1] != null && linePieces[9] != null && linesBestSubjectArea.contains(linePieces[9])) {
 
                     ///  Compare Titles   ///////////
                     String thisTitle = linePieces[1].toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
 
-                    // Fixed nested loops: Uses instant lookups to prevent system lag
                     if (journalMap.containsKey(thisTitle)) {
                         String journalId = journalMap.get(thisTitle);
                         linesJournalRankings.add(journalId + "\t" + linePieces[0].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[9].trim() + "\t" + linePieces[10].trim()
@@ -120,13 +117,11 @@ public class RankingsAndCategoriesDataTransformer {
             while ((line = br.readLine()) != null) {
                 String[] linePieces = line.split(",", -1);
 
-                // FIXED GUARD: Changed index 9 to index 6 to safely accommodate 7-column rows
                 if (linePieces.length > 6 && linePieces[0] != null && linePieces[1] != null && linePieces[6] != null) {
 
                     ///  Compare Titles   ///////////
                     String thisTitle = linePieces[1].toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
 
-                    // Fixed nested loops: Uses instant lookups to prevent system lag
                     if (conferenceMap.containsKey(thisTitle)) {
                         String conferenceId = conferenceMap.get(thisTitle);
                         linesConferenceRankings.add(conferenceId + "\t" + linePieces[0].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[4].trim() + "\t" + linePieces[6].trim()); // TODO primaryFoR
@@ -183,6 +178,6 @@ public class RankingsAndCategoriesDataTransformer {
             e.printStackTrace();
         }
 
-        System.out.println("Rankings transformation complete!");
+        System.out.println("Data transformation complete!");
     }
 }

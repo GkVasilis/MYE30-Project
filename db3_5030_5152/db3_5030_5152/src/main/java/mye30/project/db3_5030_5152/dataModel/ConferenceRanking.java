@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name = "ConferenceArticle")
+@Table(name = "conference_rankings")
 public class ConferenceRanking{
 
     @Id
@@ -20,7 +20,7 @@ public class ConferenceRanking{
     private String rank;
 
 
-    @Column(name = "primaryFoR")
+    @Column(name = "`primaryFoR`")
     private String primaryFoR;
 
 

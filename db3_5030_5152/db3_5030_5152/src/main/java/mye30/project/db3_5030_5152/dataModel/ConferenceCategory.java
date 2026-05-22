@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class ConferenceCategory {
 
     /* TODO id???? */
-    @Column(name = "primaryFoR")
+    @Column(name = "`primaryFoR`")
     private String primaryFoR;
 
     @Id

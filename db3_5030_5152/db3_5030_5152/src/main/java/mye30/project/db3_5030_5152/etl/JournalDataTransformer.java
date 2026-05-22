@@ -1,19 +1,18 @@
 package mye30.project.db3_5030_5152.etl;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JournalDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\input_article.csv";
-        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForJournal.tsv";
-        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForJournalArticles.tsv";
+
+        String projectRoot = System.getProperty("user.dir");
+
+        String inputCsvFile = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "input_article.csv";
+        String outputCSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForJournal.tsv";
+        String outputCSVFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
         String line;
         List<String> lines = new ArrayList<>();
 

@@ -2,11 +2,7 @@
 
 package mye30.project.db3_5030_5152.etl;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +11,15 @@ import java.util.Map;
 public class ArticlesDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForJournalArticles.tsv";
-        String inputCsvFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForConferenceArticles.tsv";
-        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Journal_Articles_Data.tsv";
-        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Conference_Articles_Data.tsv";
-        String outputCSVFile3 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Articles_Data.tsv";
-        String outputTSVFile4 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\Authors_Data.tsv";
+
+        String projectRoot = System.getProperty("user.dir");
+
+        String inputCsvFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
+        String inputCsvFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForConferenceArticles.tsv";
+        String outputCSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Journal_Articles_Data.tsv";
+        String outputCSVFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Conference_Articles_Data.tsv";
+        String outputCSVFile3 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Articles_Data.tsv";
+        String outputTSVFile4 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Authors_Data.tsv";
 
         String line;
         int article_ID = 1;
@@ -118,10 +117,10 @@ public class ArticlesDataTransformer {
 
                 for (int j=0; j<authorNames.length; j++) {
                     if (authorsMap.containsKey(authorNames[j].trim())) {
-                        bw.write(authorsMap.get(authorNames[j].trim()) + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[1].trim());
+                        bw.write(authorsMap.get(authorNames[j].trim()) + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[2].trim());
                         bw.newLine();
                     } else {
-                        bw.write(author_ID + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[1].trim());
+                        bw.write(author_ID + "\t" + authorNames[j].trim() + "\t" + linePieces[1].trim() + "\t" + linePieces[2].trim());
                         bw.newLine();
                         authorsMap.put(authorNames[j].trim(), author_ID);
                         author_ID++;

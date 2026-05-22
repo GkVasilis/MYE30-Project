@@ -7,9 +7,12 @@ import java.util.List;
 public class ConferenceDataTransformer {
 
     public static void main(String[] args) {
-        String inputCsvFile = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\data\\input_inproceedings.csv";
-        String outputCSVFile1 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\DataForConference.tsv";
-        String outputCSVFile2 = "C:\\Users\\User\\Desktop\\MYE30-Project\\db3_5030_5152\\db3_5030_5152\\src\\main\\resources\\transformed_data\\TempDataForConferenceArticles.tsv";
+
+        String projectRoot = System.getProperty("user.dir");
+
+        String inputCsvFile = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "input_inproceedings.csv";
+        String outputCSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForConference.tsv";
+        String outputCSVFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForConferenceArticles.tsv";
         String line;
 
         System.out.println("Transforming data...");

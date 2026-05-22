@@ -2,7 +2,7 @@ package mye30.project.db3_5030_5152.dataModel;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ConferenceArticle")
+@Table(name = "conference_articles")
 public class ConferenceArticle {
 
     @Id
