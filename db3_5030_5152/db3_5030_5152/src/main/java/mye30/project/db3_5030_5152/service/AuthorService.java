@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface AuthorService {
 
+    List<String> findAllAuthors();
+
     int findLastPublishedYear(String author_name);
 
     int findFirstPublishedYear(String author_name);

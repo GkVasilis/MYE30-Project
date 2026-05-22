@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/db3_5030_5152/db3_5030_5152/src/main/resources/sql_scripts/Article_table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/db3_5030_5152/db3_5030_5152/src/main/resources/sql_scripts/Backup_tables.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/db3_5030_5152/db3_5030_5152/src/main/resources/sql_scripts/FK_tables.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/db3_5030_5152/db3_5030_5152/src/main/resources/sql_scripts/PK_tables.sql" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="MySQL" />
+  </component>
+</project>

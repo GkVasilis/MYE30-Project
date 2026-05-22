@@ -42,21 +42,21 @@ public class MainController {
     public String getListConferences(Model model) {
         List<String> confList = conferenceService.findAllConferences();
         model.addAttribute("Conferences", confList);
-        return "List of Conferences";
+        return "ListOfConferences";
     }
 
     @GetMapping("/listAuthors")
     public String getListAuthors(Model model) {
         List<String> authorsList = authorService.findAllAuthors();
         model.addAttribute("Authors", authorsList);
-        return "List of Authors";
+        return "ListOfAuthors";
     }
 
     @GetMapping("/listYears")
     public String getListYears(Model model) {
         List<Integer> yearList = yearService.findAllYears();
         model.addAttribute("Years", yearList);
-        return "List of Years";
+        return "ListOfYears";
     }
 
     // Journal
@@ -74,7 +74,7 @@ public class MainController {
             printJournalStats(journalName, model);
             model.addAttribute("isFiltered", false);
         }
-        return "Journal Profile";
+        return "JournalProfile";
     }
 
     private void printJournalRanking(String name, Model model){
@@ -132,7 +132,7 @@ public class MainController {
             printConferenceStats(conferenceName, model);
             model.addAttribute("isFiltered", false);
         }
-        return "Conference Profile";
+        return "ConferenceProfile";
     }
 
     private void printConferenceRanking(String name, Model model){
@@ -222,7 +222,7 @@ public class MainController {
             model.addAttribute("publicationsByAuthors", publicationsByAuthors);
         }
 
-        return "Year Profile";
+        return "YearProfile";
     }
 
     // LINE CHARTS
@@ -272,7 +272,7 @@ public class MainController {
             model.addAttribute("chartDataJson", "[]");
         }
 
-        return "Line Chart";
+        return "LineChart";
     }
 
 

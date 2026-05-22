@@ -9,6 +9,9 @@ import java.util.List;
 @Repository
 public interface AuthorRepositoty extends JpaRepository<Author, Integer> {
 
+    @Query("SELECT DISTINCT ath.author_name FROM Author ath")
+    List<String> findAllAuthors();
+
     @Query("SELECT MAX(art.published_year) FROM Author ath INNER JOIN Article art ON ath.article_ID = art.article_ID WHERE ath.author_name=?1")
     int findLastPublishedYear(String author_name);
 

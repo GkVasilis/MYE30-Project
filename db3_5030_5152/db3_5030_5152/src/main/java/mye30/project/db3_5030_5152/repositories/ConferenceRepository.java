@@ -2,6 +2,7 @@ package mye30.project.db3_5030_5152.repositories;
 
 import mye30.project.db3_5030_5152.dataModel.*;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.query.JpqlQueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -75,3 +76,5 @@ public interface ConferenceRepository extends JpaRepository<Conference, Integer>
     @Query("SELECT ca.published_year, COUNT(ath.author_ID) / COUNT(ca.article_ID), COUNT (DISTINCT (ca.article_ID) )FROM ConferenceArticle ca INNER JOIN Author ath ON ca.article_ID=ath.article_ID WHERE ca.conference_name=?1 GROUP BY ca.published_year")
     List<Object[]> findAvgAuthorsNumArticlesByYear(String conf_name);
 }
+
+

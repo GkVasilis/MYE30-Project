@@ -30,8 +30,8 @@ public class JournalServiceImp implements JournalService {
     }
 
     @Override
-    public List<Object[]> findNumOfJournalAuthorsByYear(String author_name) {
-        return repo.findNumOfJournalAuthorsByYear(author_name);
+    public List<Object[]> findNumOfJournalAuthorsByYear(String journal_name) {
+        return repo.findNumOfJournalAuthorsByYear(journal_name);
     }
 
     @Override
