@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ConferenceRepository extends JpaRepository<Conference, Integer>{
 
-    @Query("SELECT c.conference_name FROM Conference c")
+    @Query("SELECT DISTINCT c.conference_name FROM Conference c")
     List<String> findAllConferences();
 
     @Query("SELECT cr FROM Conference c INNER JOIN ConferenceRanking cr ON c.conference_ID=cr.conference_ID WHERE c.conference_ID=?1")

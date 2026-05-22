@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface JournalRepository extends JpaRepository<Journal, Integer>{
 
-    @Query("SELECT j.journal_name FROM Journal j")
+    @Query("SELECT DISTINCT j.journal_name FROM Journal j")
     List<String> findAllJournals();
 
     @Query("SELECT jr FROM Journal j INNER JOIN JournalRanking jr ON j.journal_ID=jr.journal_ID WHERE j.journal_name=?1")

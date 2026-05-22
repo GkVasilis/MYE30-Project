@@ -54,9 +54,16 @@ public class TSVToDBImporter {
                         preparedStatement.addBatch();
                         recordsInserted++;
 
-                        if (recordsInserted % 2000 == 0) {
+                        if (recordsInserted % 1000 == 0) {
                             preparedStatement.executeBatch();
+                            preparedStatement.clearBatch();
                             connection.commit();
+
+                            try {
+                                Thread.sleep(30);
+                            } catch (InterruptedException ie) {
+                                Thread.currentThread().interrupt();
+                            }
                         }
                     } catch (SQLException e) {
                         System.err.println("Skipping bad row in " + tableName + ": " + e.getMessage());
@@ -118,21 +125,21 @@ public class TSVToDBImporter {
 
         String[] csvFile = {
                 "DataForJournal.tsv",
-                "DataForConference.csv",
+                "DataForConference.tsv",
                 "Articles_Data.tsv",
                 "Journal_Articles_Data.tsv",
                 "Conference_Articles_Data.tsv",
-                "Authors_Data.tsv"//,
-                //"Journal_rankings_Data.tsv",
-                //"Conference_rankings_Data.tsv"
+                "Authors_Data.tsv",
+                "Journal_rankings_Data.tsv",
+                "Conference_rankings_Data.tsv"
                 /*"Conference_Categories_Data.tsv"*/
         };
 
         String[] tableName = {
                 "journals", "conferences", "articles", "journal_articles",
-                "conference_articles", "authors"
-                //"journal_rankings",
-                //"conference_rankings" /*"conference_categories"*/
+                "conference_articles", "authors",
+                "journal_rankings",
+                "conference_rankings" /*"conference_categories"*/
         };
 
         // Explicitly define columns to bypass the metadata lock trap entirely!
@@ -142,9 +149,9 @@ public class TSVToDBImporter {
                 Arrays.asList("article_ID", "title", "published_year"),
                 Arrays.asList("article_ID", "title", "journal_ID", "journal_name", "publisher", "cdrom", "crossref", "mdate", "published_year", "url", "pages", "publtype", "journal_key"),
                 Arrays.asList("article_ID", "conference_ID", "conference_name", "title", "cdrom", "crossref", "publtype", "url", "pages", "mdate", "published_year", "conference_key"),
-                Arrays.asList("author_ID", "author_name", "article_ID", "title")
-                //Arrays.asList("journal_ID", "j_rank", "title", "bestSubjectArea", "bestSubjectRank", "country", "bestCategories", "journal_language"),
-                //Arrays.asList("conference_ID", "conf_rank_ID", "title", "c_rank", "primaryFoR")
+                Arrays.asList("author_ID", "author_name", "article_ID", "title"),
+                Arrays.asList("journal_ID", "j_rank", "title", "bestSubjectArea", "bestSubjectRank", "country", "bestCategories", "journal_language"),
+                Arrays.asList("conference_ID", "conf_rank_ID", "title", "c_rank", "primaryFoR")
                 //Arrays.asList("conference_ID", "category_name")
         );
 
