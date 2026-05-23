@@ -63,7 +63,7 @@ public class RankingsAndCategoriesDataTransformer {
         Map<String, String> journalIssnMap = new HashMap<>(); // NEW: Track by ISSN fallbacks
         Map<String, String> conferenceMap = new HashMap<>();
 
-        System.out.println("Transforming data patterns...");
+        System.out.println("Transforming data...");
 
         // Reads journal_data
         try (BufferedReader br = new BufferedReader(new FileReader(inputTsvFile4))) {
