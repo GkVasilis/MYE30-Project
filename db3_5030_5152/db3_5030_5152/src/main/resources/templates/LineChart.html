@@ -7,28 +7,45 @@
 </head>
 <body class="container py-4">
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h1>Historical Trend Charts (D3-Mapped Data Array)</h1>
+  <h1>Historical Line Charts</h1>
   <a href="/homeMenu" class="btn btn-secondary">Home Menu</a>
 </div>
 
 <div class="card mb-4">
-  <div class="card-header bg-dark text-white">Interactive Trend Query Filter Engine</div>
+  <div class="card-header bg-dark text-white">Interactive Query Filter Engine</div>
   <div class="card-body">
     <form action="/lineCharts" method="get" class="row g-3">
+
       <div class="col-md-6">
-        <label class="form-label">Query Entries (Comma Separated)</label>
-        <input type="text" name="journalNames" th:value="${#strings.listJoin(selectedJournals, ',')}" class="form-control" placeholder="Type Journal Names...">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <label class="form-label mb-0">Query Entries (Comma Separated)</label>
+          <select id="searchType" class="form-select form-select-sm" style="width: auto; max-height: 31px;">
+            <option value="journals" th:selected="${selectedJournals != null and !selectedJournals.isEmpty()}">Journals</option>
+            <option value="conferences" th:selected="${selectedConferences != null and !selectedConferences.isEmpty()}">Conferences</option>
+            <option value="authors" th:selected="${selectedAuthors != null and !selectedAuthors.isEmpty()}">Authors</option>
+          </select>
+        </div>
+
+        <input type="text" id="dynamicInput" class="form-control" placeholder="Type Names...">
+
+        <input type="hidden" id="journalNamesHidden" name="journalNames" th:value="${#strings.listJoin(selectedJournals, ',')}">
+        <input type="hidden" id="conferenceNamesHidden" name="conferenceNames" th:value="${#strings.listJoin(selectedConferences, ',')}">
+        <input type="hidden" id="authorNamesHidden" name="authorNames" th:value="${#strings.listJoin(selectedAuthors, ',')}">
       </div>
+
       <div class="col-md-3">
         <label class="form-label">Start Boundary (Min Year)</label>
         <input type="number" name="minYear" th:value="${minYear}" class="form-control" placeholder="Min Year">
       </div>
+
       <div class="col-md-3">
         <label class="form-label">End Boundary (Max Year)</label>
         <input type="number" name="maxYear" th:value="${maxYear}" class="form-control" placeholder="Max Year">
       </div>
+
       <div class="col-12 text-end">
-        <button type="submit" class="btn btn-primary">Generate Analytical Trendline Plot</button>
+        <a href="/lineCharts" class="btn btn-outline-danger me-2">Clear</a>
+        <button type="submit" class="btn btn-info">Generate Analytical Line Plot</button>
       </div>
     </form>
   </div>
@@ -39,11 +56,48 @@
 </div>
 
 <script th:inline="javascript">
-  // Injecting serialized dataset safely straight out of Thymeleaf Model attribute engine
+  const searchTypeSelect = document.getElementById('searchType');
+  const dynamicInput = document.getElementById('dynamicInput');
+  const jHidden = document.getElementById('journalNamesHidden');
+  const cHidden = document.getElementById('conferenceNamesHidden');
+  const aHidden = document.getElementById('authorNamesHidden');
+
+  function updateInputFromHidden() {
+    if (searchTypeSelect.value === 'journals') {
+      dynamicInput.value = jHidden.value;
+      dynamicInput.placeholder = "Type Journal Names...";
+    } else if (searchTypeSelect.value === 'conferences') {
+      dynamicInput.value = cHidden.value;
+      dynamicInput.placeholder = "Type Conference Names...";
+    } else if (searchTypeSelect.value === 'authors') {
+      dynamicInput.value = aHidden.value;
+      dynamicInput.placeholder = "Type Author Names...";
+    }
+  }
+
+  searchTypeSelect.addEventListener('change', () => {
+    jHidden.value = "";
+    cHidden.value = "";
+    aHidden.value = "";
+    updateInputFromHidden();
+  });
+
+  dynamicInput.addEventListener('input', () => {
+    if (searchTypeSelect.value === 'journals') {
+      jHidden.value = dynamicInput.value;
+    } else if (searchTypeSelect.value === 'conferences') {
+      cHidden.value = dynamicInput.value;
+    } else if (searchTypeSelect.value === 'authors') {
+      aHidden.value = dynamicInput.value;
+    }
+  });
+
+  updateInputFromHidden();
+
+
   const rawJsonData = /*[[${chartDataJson}]]*/ '[]';
   const parsedDataset = JSON.parse(rawJsonData);
 
-  // Transform flat object data mappings into segmented distinct label array lists
   const groups = {};
   const uniqueYearsSet = new Set();
 
@@ -56,7 +110,6 @@
   const distinctSortedTimelineLabels = Array.from(uniqueYearsSet).sort((a,b) => a - b);
 
   const configurationsDatasetsArray = Object.keys(groups).map((key, index) => {
-    // Sort data chronological inside the group
     groups[key].sort((a,b) => a.x - b.x);
 
     return {
@@ -69,7 +122,6 @@
     };
   });
 
-  // Initialize display configuration layout elements
   const htmlCanvasContext = document.getElementById('timeSeriesChart').getContext('2d');
   new Chart(htmlCanvasContext, {
     type: 'line',
