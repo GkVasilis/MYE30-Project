@@ -38,13 +38,12 @@ public class ConferenceServiceImp implements ConferenceService {
     }
 
     @Override
-    public List<Object[]> findConferenceByLastYear(String conf_name){
+    public Integer findConferenceByLastYear(String conf_name){
         return repo.findConferenceByLastYear(conf_name);
     }
 
     @Override
-
-    public List<Object[]> findConferenceByFirstYear(String conf_name){
+    public Integer findConferenceByFirstYear(String conf_name){
         return repo.findConferenceByFirstYear(conf_name);
     }
 

@@ -1,96 +1,157 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <title>Annual Chronological Profile</title>
-  <style>
-    body { font-family: sans-serif; margin: 40px; background: #f8f9fa; color: #2d3748; }
-    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    h1 { color: #4a154b; margin-bottom: 25px; }
-    .summary-banner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
-    .banner-card { background: #faf5ff; border: 1px solid #e9d8fd; padding: 15px; border-radius: 6px; text-align: center; }
-    .banner-val { font-size: 22px; font-weight: bold; color: #6b46c1; display: block; }
-    .banner-label { font-size: 12px; color: #718096; text-transform: uppercase; margin-top: 5px; }
-    .context-box { background: #f7fafc; border-left: 4px solid #6b46c1; padding: 15px; margin-top: 25px; border-radius: 0 6px 6px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; }
-    th { background: #f7fafc; color: #4a5568; }
-    .btn-back { display: inline-block; margin-bottom: 20px; color: #4a5568; text-decoration: none; font-size: 14px; }
-    .btn-back:hover { color: #6b46c1; }
-  </style>
+  <title>Year Profile Data Summary</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script>
+    // This script ensures that when you pick a filter type from the dropdown,
+    // the text input field changes its 'name' attribute dynamically to match what the backend expects!
+    function updateInputName() {
+      var selection = document.getElementById("filterTypeSelector").value;
+      var textInput = document.getElementById("filterTextInput");
+
+      if (selection === "Journal") {
+        textInput.name = "journalName";
+        textInput.placeholder = "Enter Journal name to filter...";
+      } else if (selection === "Conference") {
+        textInput.name = "conferenceName";
+        textInput.placeholder = "Enter Conference name to filter...";
+      } else if (selection === "Author") {
+        textInput.name = "authorName";
+        textInput.placeholder = "Enter Author name to filter...";
+      }
+    }
+  </script>
 </head>
-<body>
-<div class="container">
-  <a th:href="@{/listYears}" class="btn-back">← Back to Timeline Index</a>
+<body class="container py-4">
 
-  <h1 th:text="'Annual Review: Summary for ' + ${yearValue}">Annual Review: 2026</h1>
+<div class="mb-4">
+  <h1 th:text="'Statistical Report for Year: ' + ${yearValue}">Year Metrics</h1>
+  <a href="/listYears" class="btn btn-secondary mt-2">Back to Years List</a>
+</div>
 
-  <div class="summary-banner">
-    <div class="banner-card">
-      <span class="banner-val" th:text="${publishedArticles}">0</span>
-      <span class="banner-label">Articles Published</span>
-    </div>
-    <div class="banner-card">
-      <span class="banner-val" th:text="${numOfJournals}">0</span>
-      <span class="banner-label">Active Journals</span>
-    </div>
-    <div class="banner-card">
-      <span class="banner-val" th:text="${numOfConferences}">0</span>
-      <span class="banner-label">Active Conferences</span>
-    </div>
-    <div class="banner-card">
-      <span class="banner-val" th:text="${numOfAuthors != null ? numOfAuthors.size() : 0}">0</span>
-      <span class="banner-label">Contributing Authors</span>
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card text-center bg-warning text-white py-3">
+      <h5>Articles Published</h5>
+      <h2 th:text="${publishedArticles != null ? publishedArticles : 0}">0</h2>
     </div>
   </div>
+  <div class="col-md-3">
+    <div class="card text-center bg-warning text-white py-3">
+      <h5>Distinct Journals</h5>
+      <h2 th:text="${numOfJournals != null ? numOfJournals : 0}">0</h2>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center bg-warning text-white py-3">
+      <h5>Distinct Conferences</h5>
+      <h2 th:text="${numOfConferences != null ? numOfConferences : 0}">0</h2>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center bg-warning text-white py-2">
+      <h6 class="mb-1">Authors (Total/Distinct)</h6>
+      <h2>
+        <span th:text="${numOfAuthors != null ? numOfAuthors : 0}">0</span>
+        <span> / </span>
+        <span th:text="${numOfAuthorsDistinct != null ? numOfAuthorsDistinct : 0}">0</span>
+      </h2>
+    </div>
+  </div>
+</div>
 
-  <div th:if="${ContextType != null}" class="context-box">
-    <h3 th:text="'Specific Context Deep-Dive: ' + ${ContextType} + ' Distributions'">Contextual Deep Dive</h3>
+<div class="card mb-4">
+  <div class="card-header bg-dark text-white">Search Filters</div>
+  <div class="card-body">
+    <form action="/yearProfile" method="get" class="row g-3">
+      <input type="hidden" name="yearValue" th:value="${yearValue}"/>
 
-    <table th:if="${ContextType == 'Journal' && publicationsByJournal != null}">
-      <thead>
-      <tr>
-        <th>Journal/Publisher Field</th>
-        <th>Quantities Counter</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="row : ${publicationsByJournal}">
-        <td th:text="${row[0]}">Property Descriptor</td>
-        <td th:text="${row[1]}" style="font-weight: bold; color: #6b46c1;">0</td>
-      </tr>
-      </tbody>
-    </table>
+      <div class="col-md-3">
+        <label class="form-label">Search Category Type</label>
+        <select id="filterTypeSelector" class="form-select" onchange="updateInputName()">
+          <option value="Journal" th:selected="${ContextType == 'Journal' or ContextType == 'General' or ContextType == null}">Journal Name</option>
+          <option value="Conference" th:selected="${ContextType == 'Conference'}">Conference Name</option>
+          <option value="Author" th:selected="${ContextType == 'Author'}">Author Name</option>
+        </select>
+      </div>
 
-    <table th:if="${ContextType == 'Conference' && publicationsByConferences != null}">
-      <thead>
-      <tr>
-        <th>Proceedings Metric Key</th>
-        <th>Quantities Counter</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="row : ${publicationsByConferences}">
-        <td th:text="${row[0]}">Property Descriptor</td>
-        <td th:text="${row[1]}" style="font-weight: bold; color: #6b46c1;">0</td>
-      </tr>
-      </tbody>
-    </table>
+      <div class="col-md-6">
+        <label class="form-label">Search Name</label>
+        <input id="filterTextInput"
+               type="text"
+               th:name="${ContextType == 'Conference'} ? 'conferenceName' : (${ContextType == 'Author'} ? 'authorName' : 'journalName')"
+               th:value="${ContextType != 'General'} ? ${ContextName} : ''"
+               class="form-control"
+               th:placeholder="${ContextType == 'Conference'} ? 'Enter Conference name to filter...' : (${ContextType == 'Author'} ? 'Enter Author name to filter...' : 'Enter Journal name to filter...')">
+      </div>
 
-    <table th:if="${ContextType == 'Author' && publicationsByAuthors != null}">
-      <thead>
-      <tr>
-        <th>Author Attribute Identifier</th>
-        <th>Quantities Counter</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="row : ${publicationsByAuthors}">
-        <td th:text="${row[0]}">Property Descriptor</td>
-        <td th:text="${row[1]}" style="font-weight: bold; color: #6b46c1;">0</td>
-      </tr>
-      </tbody>
-    </table>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-warning w-50 me-2">Apply Search</button>
+        <a th:href="@{/yearProfile(yearValue=${yearValue})}" class="btn btn-outline-danger w-50">Reset Layout</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card mb-4" th:if="${ContextType != 'General' and ContextType != null}">
+  <div class="card-header bg-dark text-white" th:text="'Context Analysis Section: ' + ${ContextType}">Context Summary</div>
+  <div class="card-body">
+
+    <div th:if="${ContextType == 'Journal'}">
+      <h5 th:text="'Publications List for Journal: ' + ${ContextName}">Journal List</h5>
+      <table class="table table-striped table-hover mt-3">
+        <thead class="table-warning">
+        <tr>
+          <th>Article Title</th>
+          <th>Journal Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${publicationsByJournal}">
+          <td th:text="${row[1]}">Article Title</td>
+          <td th:text="${row[2]}">Journal Name</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:if="${ContextType == 'Conference'}">
+      <h5 th:text="'Publications List for Conference: ' + ${ContextName}">Conference List</h5>
+      <table class="table table-striped table-hover mt-3">
+        <thead class="table-warning">
+        <tr>
+          <th>Article Title</th>
+          <th>Conference Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${publicationsByConferences}">
+          <td th:text="${row[1]}">Article Title</td>
+          <td th:text="${row[2]}">Conference Name</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:if="${ContextType == 'Author'}">
+      <h5 th:text="'Publications List for Author: ' + ${ContextName}">Author List</h5>
+      <table class="table table-striped table-hover mt-3">
+        <thead class="table-warning">
+        <tr>
+          <th>Article Title</th>
+          <th>Author Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${publicationsByAuthors}">
+          <td th:text="${row[1]}">Article Title</td>
+          <td th:text="${row[2]}">Author Name</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 </body>

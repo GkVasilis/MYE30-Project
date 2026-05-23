@@ -1,6 +1,8 @@
 package mye30.project.db3_5030_5152.repositories;
 
 import mye30.project.db3_5030_5152.dataModel.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +11,11 @@ import java.util.List;
 @Repository
 public interface AuthorRepositoty extends JpaRepository<Author, Integer> {
 
+    //@Query("SELECT DISTINCT ath.author_name FROM Author ath")
+    //List<String> findAllAuthors();
+
     @Query("SELECT DISTINCT ath.author_name FROM Author ath")
-    List<String> findAllAuthors();
+    Page<String> findAllAuthors(Pageable pageable);
 
     @Query("SELECT MAX(art.published_year) FROM Author ath INNER JOIN Article art ON ath.article_ID = art.article_ID WHERE ath.author_name=?1")
     Integer findLastPublishedYear(String author_name);

@@ -35,12 +35,12 @@ public class JournalServiceImp implements JournalService {
     }
 
     @Override
-    public List<Object[]> findJournalByLastYear(String journal_name) {
+    public Integer findJournalByLastYear(String journal_name) {
         return repo.findJournalByLastYear(journal_name);
     }
 
     @Override
-    public List<Object[]> findJournalByFirstYear(String journal_name) {
+    public Integer findJournalByFirstYear(String journal_name) {
         return repo.findJournalByFirstYear(journal_name);
     }
 

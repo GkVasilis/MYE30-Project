@@ -23,19 +23,19 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
 
     // STATS
 
-    @Query("SELECT  j , MAX(ja.published_year) FROM Journal j INNER JOIN JournalArticle ja ON j.journal_ID=ja.journal_ID WHERE j.journal_name=?1 GROUP BY j")
-    List<Object[]> findJournalByLastYear(String journal_name);
+    @Query("SELECT MAX(ja.published_year) FROM Journal j INNER JOIN JournalArticle ja ON j.journal_ID=ja.journal_ID WHERE j.journal_name=?1")
+    Integer findJournalByLastYear(String journal_name);
 
-    @Query("SELECT  j , MIN(ja.published_year) FROM Journal j INNER JOIN JournalArticle ja ON j.journal_ID=ja.journal_ID WHERE j.journal_name=?1 GROUP BY j")
-    List<Object[]> findJournalByFirstYear(String journal_name);
+    @Query("SELECT MIN(ja.published_year) FROM Journal j INNER JOIN JournalArticle ja ON j.journal_ID=ja.journal_ID WHERE j.journal_name=?1")
+    Integer findJournalByFirstYear(String journal_name);
 
     @Query("SELECT COUNT(DISTINCT ath.author_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
     Integer findNumOfJournalAuthors(String journal_name);
 
-    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(ja.article_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
+    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.article_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
     Double findAvgAuthorsByJournal(String journal_name);
 
-    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(ja.published_year) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
+    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.published_year) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
     Double findAvgAuthorsByYear(String journal_name);
 
     @Query("SELECT art FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1")
@@ -44,7 +44,7 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     @Query("SELECT ath FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1")
     List<Author> findJournalAuthors(String journal_name);
 
-    @Query("SELECT COUNT(art.article_ID) * 1.0 / COUNT(ja.published_year) FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1")
+    @Query("SELECT COUNT(art.article_ID) * 1.0 / COUNT(DISTINCT ja.published_year) FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1")
     Double findAvgJournalArticles(String journal_name);
 
     // YEAR RANGE QUERIES
@@ -52,10 +52,10 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     @Query("SELECT COUNT(DISTINCT ath.author_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
     Integer findNumOfJournalAuthorsRange(String journal_name, int y1, int y2);
 
-    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(ja.article_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
+    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.article_ID) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
     Double findAvgAuthorsByJournalRange(String journal_name, int y1, int y2);
 
-    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(ja.published_year) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
+    @Query("SELECT COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.published_year) FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
     Double findAvgAuthorsByYearRange(String journal_name, int y1, int y2);
 
     @Query("SELECT art FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
@@ -64,7 +64,7 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     @Query("SELECT ath FROM Author ath INNER JOIN JournalArticle ja ON ath.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
     List<Author> findJournalAuthorsRange(String journal_name, int y1, int y2);
 
-    @Query("SELECT COUNT(art.article_ID) * 1.0 / COUNT(ja.published_year) FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
+    @Query("SELECT COUNT(art.article_ID) * 1.0 / COUNT(DISTINCT ja.published_year) FROM Article art INNER JOIN JournalArticle ja ON art.article_ID=ja.article_ID WHERE ja.journal_name=?1 AND ja.published_year>=?2 AND ja.published_year<=?3")
     Double findAvgJournalArticlesRange(String journal_name, int y1, int y2);
 
     // TODO REPORT
@@ -75,7 +75,7 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     @Query("SELECT j.publisher, COUNT(j.journal_ID) FROM Journal j WHERE j.publisher=?1 GROUP BY j.publisher")
     Integer findPublisherPublications(String publisher);
 
-    @Query("SELECT ja.published_year, COUNT(ath.author_ID) * 1.0 / COUNT(ja.article_ID), COUNT (DISTINCT ja.article_ID)FROM JournalArticle ja INNER JOIN Author ath ON ja.article_ID=ath.article_ID WHERE ja.journal_name=?1 GROUP BY ja.published_year")
+    @Query("SELECT ja.published_year, COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.article_ID), COUNT (DISTINCT ja.article_ID)FROM JournalArticle ja INNER JOIN Author ath ON ja.article_ID=ath.article_ID WHERE ja.journal_name=?1 GROUP BY ja.published_year")
     List<Object[]> findAvgAuthorsNumArticlesByYear(String journal_name);
 
     //@Query("SELECT ? FROM Journal j INNER JOIN JournalRanking jr ON j.journal_ID=jr.journal_ID WHERE j.journal_name=?1")

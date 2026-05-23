@@ -13,9 +13,9 @@ public interface ConferenceService {
 
     List<Object[]> findNumOfConferenceAuthorsByYear(String author_name);
 
-    List<Object[]> findConferenceByLastYear(String conf_name);
+    Integer findConferenceByLastYear(String conf_name);
 
-    List<Object[]> findConferenceByFirstYear(String conf_name);
+    Integer findConferenceByFirstYear(String conf_name);
 
     Integer findNumOfConferenceAuthors(String conf_name);
 

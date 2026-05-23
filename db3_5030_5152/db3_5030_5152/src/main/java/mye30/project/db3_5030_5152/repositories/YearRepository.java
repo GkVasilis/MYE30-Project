@@ -13,16 +13,16 @@ public interface YearRepository extends JpaRepository<Article, Integer>{
     @Query("SELECT DISTINCT(art.published_year) FROM Article art ORDER BY art.published_year ASC")
     List<Integer> findAllYears();
 
-    @Query("SELECT COUNT(art.article_ID) FROM Article art WHERE art.published_year = ?1 GROUP BY art.article_ID")
+    @Query("SELECT COUNT(art.article_ID) FROM Article art WHERE art.published_year = ?1")
     Integer findPublishedArticles(int year);
 
-    @Query("SELECT COUNT(j.journal_ID) FROM Article art INNER JOIN JournalArticle j ON art.article_ID= j.article_ID WHERE art.published_year = ?1 GROUP BY j.journal_ID")
+    @Query("SELECT COUNT(j.journal_ID) FROM Article art INNER JOIN JournalArticle j ON art.article_ID= j.article_ID WHERE art.published_year = ?1")
     Integer findNumOfJournals(int year);
 
     @Query("SELECT COUNT(cnf.conference_ID) FROM Article art INNER JOIN ConferenceArticle cnf ON art.article_ID= cnf.article_ID WHERE art.published_year = ?1")
     Integer findNumOfConferences(int year);
 
-    @Query("SELECT COUNT(ath.author_ID) * 1.0, COUNT(DISTINCT ath.author_ID) FROM Article art INNER JOIN Author ath ON art.article_ID= ath.article_ID WHERE art.published_year = ?1")
+    @Query("SELECT COUNT(ath.author_ID), COUNT(DISTINCT ath.author_ID) FROM Article art INNER JOIN Author ath ON art.article_ID= ath.article_ID WHERE art.published_year = ?1")
     List<Object[]> findNumOfAuthors(int year);
 
     @Query("SELECT art.published_year, art.title, j.journal_name  FROM Article art INNER JOIN JournalArticle j ON art.article_ID= j.article_ID WHERE j.journal_name = ?2 AND  art.published_year = ?1")

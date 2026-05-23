@@ -13,9 +13,9 @@ public interface JournalService {
 
     List<Object[]> findNumOfJournalAuthorsByYear(String journal_name);
 
-    List<Object[]> findJournalByLastYear(String journal_name);
+    Integer findJournalByLastYear(String journal_name);
 
-    List<Object[]> findJournalByFirstYear(String journal_name);
+    Integer findJournalByFirstYear(String journal_name);
 
     Integer findNumOfJournalAuthors(String journal_name);
 

@@ -44,13 +44,25 @@ public class MainController {
         model.addAttribute("Conferences", confList);
         return "ListOfConferences";
     }
-
+    /*
     @GetMapping("/listAuthors")
     public String getListAuthors(Model model) {
         List<String> authorsList = authorService.findAllAuthors();
         model.addAttribute("Authors", authorsList);
         return "ListOfAuthors";
+    }*/
+    @GetMapping("/listAuthors")
+    public String getListAuthors(Model model, @RequestParam(defaultValue = "0") int page) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, 100);
+        org.springframework.data.domain.Page<String> authorsPage = authorService.findAllAuthors(pageable);
+
+        model.addAttribute("Authors", authorsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", authorsPage.getTotalPages());
+
+        return "ListOfAuthors";
     }
+
 
     @GetMapping("/listYears")
     public String getListYears(Model model) {
@@ -59,7 +71,7 @@ public class MainController {
         return "ListOfYears";
     }
 
-    // Journal
+    // JOURNALS
 
     @GetMapping("/journalProfile")
     public String getJournalProfile(@RequestParam("journalName") String journalName, @RequestParam(value = "minYear", required = false) Integer minYear, @RequestParam(value = "maxYear", required = false) Integer maxYear,Model model) {
@@ -77,14 +89,19 @@ public class MainController {
         return "JournalProfile";
     }
 
-    private void printJournalRanking(String name, Model model){
-        JournalRanking ranking = journalService.findJournalRanking(name);
-        model.addAttribute("Ranking", ranking);
+    private void printJournalRanking(String name, Model model) {
+        if (name != null) {
+            String cleanName = name.trim();
+            JournalRanking ranking = journalService.findJournalRanking(cleanName);
+            model.addAttribute("Ranking", ranking);
+        } else {
+            model.addAttribute("Ranking", null);
+        }
     }
 
     private void printJournalStats(String name, Model model){
-        List<Object[]> firstYear = journalService.findJournalByFirstYear(name);
-        List<Object[]> lastYear = journalService.findJournalByLastYear(name);
+        Integer firstYear = journalService.findJournalByFirstYear(name);
+        Integer lastYear = journalService.findJournalByLastYear(name);
         Integer numOfAuthors = journalService.findNumOfJournalAuthors(name);
         Double avgAuthorsByJournal = journalService.findAvgAuthorsByJournal(name);
         Double avgAuthorsByYear = journalService.findAvgAuthorsByYear(name);
@@ -94,7 +111,7 @@ public class MainController {
         model.addAttribute("YearFirstJournalPublished", firstYear);
         model.addAttribute("YearLastJournalPublished", lastYear);
         model.addAttribute("NumberJournalAuthors", numOfAuthors);
-        model.addAttribute("AvgAuthorsOfJournal ", avgAuthorsByJournal);
+        model.addAttribute("AvgAuthorsOfJournal", avgAuthorsByJournal);
         model.addAttribute("AvgAuthorsByYear", avgAuthorsByYear);
         model.addAttribute("Articles", articles);
         model.addAttribute("Authors", authors);
@@ -110,14 +127,14 @@ public class MainController {
         Double avgJA = journalService.findAvgJournalArticlesRange(name, min, max);
 
         model.addAttribute("NumberJournalAuthors", numOfAuthors);
-        model.addAttribute("AvgAuthorsOfJournal ", avgAuthorsByJournal);
+        model.addAttribute("AvgAuthorsOfJournal", avgAuthorsByJournal);
         model.addAttribute("AvgAuthorsByYear", avgAuthorsByYear);
         model.addAttribute("Articles", articles);
         model.addAttribute("Authors", authors);
         model.addAttribute("AvgArticlesByYear", avgJA);
     }
 
-    // Conference
+    // CONFERENCES
 
     @GetMapping("/conferenceProfile")
     public String getConferenceProfile(@RequestParam("conferenceName") String conferenceName, @RequestParam(value = "minYear", required = false) Integer minYear, @RequestParam(value = "maxYear", required = false) Integer maxYear,Model model) {
@@ -135,14 +152,19 @@ public class MainController {
         return "ConferenceProfile";
     }
 
-    private void printConferenceRanking(String name, Model model){
-        ConferenceRanking ranking = conferenceService.findConferenceRanking(name);
-        model.addAttribute("Ranking", ranking);
+    private void printConferenceRanking(String name, Model model) {
+        if (name != null) {
+            String cleanName = name.trim();
+            ConferenceRanking ranking = conferenceService.findConferenceRanking(cleanName);
+            model.addAttribute("Ranking", ranking);
+        } else {
+            model.addAttribute("Ranking", null);
+        }
     }
 
     private void printConferenceStats(String name, Model model){
-        List<Object[]> firstYear = conferenceService.findConferenceByFirstYear(name);
-        List<Object[]> lastYear = conferenceService.findConferenceByLastYear(name);
+        Integer firstYear = conferenceService.findConferenceByFirstYear(name);
+        Integer lastYear = conferenceService.findConferenceByLastYear(name);
         Integer numOfAuthors = conferenceService.findNumOfConferenceAuthors(name);
         Double avgAuthorsByConference = conferenceService.findAvgAuthorsByConference(name);
         Double avgAuthorsByYear = conferenceService.findAvgAuthorsByYear(name);
@@ -152,11 +174,11 @@ public class MainController {
         model.addAttribute("YearFirstConferencePublished", firstYear);
         model.addAttribute("YearLastConferencePublished", lastYear);
         model.addAttribute("NumberConferenceAuthors", numOfAuthors);
-        model.addAttribute("AvgAuthorsofConference ", avgAuthorsByConference);
-        model.addAttribute("AvgAuthorsbyyear", avgAuthorsByYear);
+        model.addAttribute("AvgAuthorsOfConference", avgAuthorsByConference);
+        model.addAttribute("AvgAuthorsByYear", avgAuthorsByYear);
         model.addAttribute("Articles", articles);
         model.addAttribute("Authors", authors);
-        model.addAttribute("Avgarticlesbyyear", avgJA);
+        model.addAttribute("AvgArticlesByYear", avgJA);
     }
 
     private void printConferenceStatsRange(String name, int min, int max, Model model){
@@ -168,14 +190,14 @@ public class MainController {
         Double avgJA = conferenceService.findAvgConferenceArticlesRange(name, min, max);
 
         model.addAttribute("NumberConferenceAuthors", numOfAuthors);
-        model.addAttribute("AvgAuthorsofConference ", avgAuthorsByConference);
-        model.addAttribute("AvgAuthorsbyyear", avgAuthorsByYear);
+        model.addAttribute("AvgAuthorsOfConference", avgAuthorsByConference);
+        model.addAttribute("AvgAuthorsByYear", avgAuthorsByYear);
         model.addAttribute("Articles", articles);
         model.addAttribute("Authors", authors);
-        model.addAttribute("Avgarticlesbyyear", avgJA);
+        model.addAttribute("AvgArticlesByYear", avgJA);
     }
 
-    // Author
+    // AUTHORS
 
     @GetMapping("/authorProfile")
     public String getAuthorProfile(@RequestParam("authorName") String authorName,Model model) {
@@ -191,35 +213,87 @@ public class MainController {
         return "AuthorProfile";
     }
 
-    // Years
+    // YEARS
 
     @GetMapping("/yearProfile")
-    public String getYearProfile(@RequestParam("yearValue") Integer yearValue, @RequestParam(value = "journalName", required = false) String journalName, @RequestParam(value = "conferenceName", required = false) String conferenceName, @RequestParam(value = "authorName", required = false) String authorName, Model model) {
+    public String getYearProfile(
+            @RequestParam("yearValue") Integer yearValue,
+            @RequestParam(value = "journalName", required = false) String journalName,
+            @RequestParam(value = "conferenceName", required = false) String conferenceName,
+            @RequestParam(value = "authorName", required = false) String authorName,
+            Model model) {
+
         Integer publishedArticles = yearService.findPublishedArticles(yearValue);
         Integer numOfJournals = yearService.findNumOfJournals(yearValue);
         Integer numOfConferences = yearService.findNumOfConferences(yearValue);
         List<Object[]> numOfAuthors = yearService.findNumOfAuthors(yearValue);
 
+        model.addAttribute("yearValue", yearValue);
         model.addAttribute("publishedArticles", publishedArticles);
         model.addAttribute("numOfJournals", numOfJournals);
         model.addAttribute("numOfConferences", numOfConferences);
-        model.addAttribute("numOfAuthors", numOfAuthors);
 
-        if (journalName != null) {
-            List<Object[]> publicationsByJournal = yearService.findPublicationByJournal(yearValue, journalName);
+        if (numOfAuthors != null && !numOfAuthors.isEmpty()) {
+            Object[] firstRow = numOfAuthors.get(0);
+            model.addAttribute("numOfAuthors", firstRow[0]);
+            model.addAttribute("numOfAuthorsDistinct", firstRow[1]);
+        } else {
+            model.addAttribute("numOfAuthors", 0);
+            model.addAttribute("numOfAuthorsDistinct", 0);
+        }
+
+        model.addAttribute("publicationsByJournal", new ArrayList<>());
+        model.addAttribute("publicationsByConferences", new ArrayList<>());
+        model.addAttribute("publicationsByAuthors", new ArrayList<>());
+
+        if (journalName != null && !journalName.trim().isEmpty()) {
+            String cleanJournalName = journalName.trim();
+            List<Object[]> publicationsByJournalRaw = yearService.findPublicationByJournal(yearValue, cleanJournalName);
+            List<Object[]> publicationsByJournal = new ArrayList<>();
+            if (publicationsByJournalRaw != null) {
+                for (Object[] row : publicationsByJournalRaw) {
+                    Object[] mappedRow = new Object[3];
+                    mappedRow[0] = row[0]; mappedRow[1] = row[1]; mappedRow[2] = row[2];
+                    publicationsByJournal.add(mappedRow);
+                }
+            }
             model.addAttribute("ContextType", "Journal");
-            //model.addAttribute("ContextName", journalName);
+            model.addAttribute("ContextName", cleanJournalName);
             model.addAttribute("publicationsByJournal", publicationsByJournal);
-        } else if (conferenceName != null) {
-            List<Object[]> publicationsByConferences = yearService.findPublicationByConference(yearValue, conferenceName);
+
+        } else if (conferenceName != null && !conferenceName.trim().isEmpty()) {
+            String cleanConferenceName = conferenceName.trim();
+            List<Object[]> publicationsByConferencesRaw = yearService.findPublicationByConference(yearValue, cleanConferenceName);
+            List<Object[]> publicationsByConferences = new ArrayList<>();
+            if (publicationsByConferencesRaw != null) {
+                for (Object[] row : publicationsByConferencesRaw) {
+                    Object[] mappedRow = new Object[3];
+                    mappedRow[0] = row[0]; mappedRow[1] = row[1]; mappedRow[2] = row[2];
+                    publicationsByConferences.add(mappedRow);
+                }
+            }
             model.addAttribute("ContextType", "Conference");
-            //model.addAttribute("ContextName", conferenceName);
+            model.addAttribute("ContextName", cleanConferenceName);
             model.addAttribute("publicationsByConferences", publicationsByConferences);
-        } else if (authorName != null) {
-            List<Object[]> publicationsByAuthors = yearService.findPublicationByAuthor(yearValue, authorName);
+
+        } else if (authorName != null && !authorName.trim().isEmpty()) {
+            String cleanAuthorName = authorName.trim();
+            List<Object[]> publicationsByAuthorsRaw = yearService.findPublicationByAuthor(yearValue, cleanAuthorName);
+            List<Object[]> publicationsByAuthors = new ArrayList<>();
+            if (publicationsByAuthorsRaw != null) {
+                for (Object[] row : publicationsByAuthorsRaw) {
+                    Object[] mappedRow = new Object[3];
+                    mappedRow[0] = row[0]; mappedRow[1] = row[1]; mappedRow[2] = row[2];
+                    publicationsByAuthors.add(mappedRow);
+                }
+            }
             model.addAttribute("ContextType", "Author");
-            //model.addAttribute("ContextName", authorName);
+            model.addAttribute("ContextName", cleanAuthorName);
             model.addAttribute("publicationsByAuthors", publicationsByAuthors);
+
+        } else {
+            model.addAttribute("ContextType", "Journal");
+            model.addAttribute("ContextName", "");
         }
 
         return "YearProfile";
@@ -240,22 +314,17 @@ public class MainController {
 
         List<Map<String, Object>> combinedChartData = new ArrayList<>();
 
-        // Set default fallbacks if range boundaries aren't passed
         int startYear = (minYear != null) ? minYear : 0;
         int endYear = (maxYear != null) ? maxYear : Integer.MAX_VALUE;
 
-        // 1. Extract Article Counts per Year (Uses if-else if)
         extractArticleCounts(journalNames, conferenceNames, authorNames, startYear, endYear, combinedChartData);
 
-        // 2. Extract Author Counts per Year (Uses if-else if)
         extractAuthorCounts(journalNames, conferenceNames, startYear, endYear, combinedChartData);
 
         extractArticleCountsByCategory(journalCategories, conferenceCategories, combinedChartData);
 
-        // Chronological sort so D3 connects points seamlessly from left to right
         combinedChartData.sort(Comparator.comparing(m -> (String) m.get("years").toString()));//todo intValue()
 
-        // Keep inputs on the UI model to pre-populate inputs/text filters
         model.addAttribute("selectedJournals", journalNames);
         model.addAttribute("selectedConferences", conferenceNames);
         model.addAttribute("selectedAuthors", authorNames);
@@ -264,7 +333,6 @@ public class MainController {
         model.addAttribute("minYear", minYear);
         model.addAttribute("maxYear", maxYear);
 
-        // Serialize the combined, filtered dataset down to the Thymeleaf model once
         try {
             ObjectMapper mapper = new ObjectMapper();
             model.addAttribute("chartDataJson", mapper.writeValueAsString(combinedChartData));
@@ -349,26 +417,24 @@ public class MainController {
                 List<Object[]> numOfJournalAuthorsByYear = journalService.findNumOfJournalAuthorsByYear(jName);
                 if (numOfJournalAuthorsByYear != null) {
                     for (Object[] row : numOfJournalAuthorsByYear) {
-                        if (row != null && row.length >= 3) { // Changed to >= 3 because your query now returns 3 columns
+                        if (row != null && row.length >= 3) {
 
                             int year = ((Number) row[0]).intValue();
 
                             if (year >= startYear && year <= endYear) {
-                                long totalAuthors = ((Number) row[1]).longValue();    // COUNT(ath.author_ID)
-                                long distinctAuthors = ((Number) row[2]).longValue(); // COUNT(DISTINCT (ath.author_ID))
+                                long totalAuthors = ((Number) row[1]).longValue();
+                                long distinctAuthors = ((Number) row[2]).longValue();
 
-                                // LINE 1: Data point for Total Authors
                                 Map<String, Object> totalPoint = new HashMap<>();
-                                totalPoint.put("name", jName + " (Total Authors)"); // Line Identity
-                                totalPoint.put("years", year);               // X-Axis
-                                totalPoint.put("number", totalAuthors);          // Y-Axis
+                                totalPoint.put("name", jName + " (Total Authors)");
+                                totalPoint.put("years", year);
+                                totalPoint.put("number", totalAuthors);
                                 targetList.add(totalPoint);
 
-                                // LINE 2: Data point for Distinct Authors
                                 Map<String, Object> distinctPoint = new HashMap<>();
-                                distinctPoint.put("name", jName + " (Distinct Authors)"); // Line Identity
-                                distinctPoint.put("years", year);                  // X-Axis
-                                distinctPoint.put("number", distinctAuthors);          // Y-Axis
+                                distinctPoint.put("name", jName + " (Distinct Authors)");
+                                distinctPoint.put("years", year);
+                                distinctPoint.put("number", distinctAuthors);
                                 targetList.add(distinctPoint);
                             }
                         }
@@ -378,7 +444,6 @@ public class MainController {
         }
         else if (conferenceNames != null && !conferenceNames.isEmpty()) {
             for (String cName : conferenceNames) {
-                // MATCHING INNER LOGIC: Utilizing your pre-aggregated database method!
                 List<Object[]> numOfConferenceAuthorsByYear = conferenceService.findNumOfConferenceAuthorsByYear(cName);
                 if (numOfConferenceAuthorsByYear != null) {
                     for (Object[] row : numOfConferenceAuthorsByYear) {
@@ -386,21 +451,19 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
 
                             if (year >= startYear && year <= endYear) {
-                                long totalAuthors = ((Number) row[1]).longValue();    // COUNT(ath.author_ID)
-                                long distinctAuthors = ((Number) row[2]).longValue(); // COUNT(DISTINCT (ath.author_ID))
+                                long totalAuthors = ((Number) row[1]).longValue();
+                                long distinctAuthors = ((Number) row[2]).longValue();
 
-                                // LINE 1: Data point for Total Authors
                                 Map<String, Object> totalPoint = new HashMap<>();
-                                totalPoint.put("name", cName + " (Total Authors)"); // Line Identity
-                                totalPoint.put("years", year);               // X-Axis
-                                totalPoint.put("number", totalAuthors);          // Y-Axis
+                                totalPoint.put("name", cName + " (Total Authors)");
+                                totalPoint.put("years", year);
+                                totalPoint.put("number", totalAuthors);
                                 targetList.add(totalPoint);
 
-                                // LINE 2: Data point for Distinct Authors
                                 Map<String, Object> distinctPoint = new HashMap<>();
-                                distinctPoint.put("name", cName + " (Distinct Authors)"); // Line Identity
-                                distinctPoint.put("years", year);                  // X-Axis
-                                distinctPoint.put("number", distinctAuthors);          // Y-Axis
+                                distinctPoint.put("name", cName + " (Distinct Authors)");
+                                distinctPoint.put("years", year);
+                                distinctPoint.put("number", distinctAuthors);
                                 targetList.add(distinctPoint);
                             }
                         }
@@ -431,7 +494,6 @@ public class MainController {
         }
         else if (conferenceCategory != null && !conferenceCategory.isEmpty()) {
             for (String categName : conferenceCategory) {
-                // MATCHING INNER LOGIC: Utilizing your pre-aggregated database method!
                 List<Object[]> numOfConferenceArticlesByCategory = conferenceService.findNumOfConferenceByCategory(categName);
                 if (numOfConferenceArticlesByCategory != null) {
                     for (Object[] row : numOfConferenceArticlesByCategory) {
@@ -459,7 +521,6 @@ public class MainController {
 
         List<Map<String, Object>> groupedBarDataset = new ArrayList<>();
 
-        // Route 1: Process Journals exclusively if provided
         if (journalNames != null && !journalNames.isEmpty()) {
             for (String jName : journalNames) {
                 List<Article> totalArticlesList = journalService.findJournalArticles(jName);
@@ -486,7 +547,6 @@ public class MainController {
                 groupedBarDataset.add(bar3);
             }
         }
-        // Route 2: Fall back to Conferences if Journals are empty
         else if (conferenceNames != null && !conferenceNames.isEmpty()) {
             for (String cName : conferenceNames) {
                 List<Article> totalArticlesList = conferenceService.findConferenceArticles(cName);
@@ -513,27 +573,22 @@ public class MainController {
                 groupedBarDataset.add(bar3);
             }
         }
-        // Route 3: Fall back to Publishers if both Journals and Conferences are empty
         else if (publisherNames != null && !publisherNames.isEmpty()) {
             for (String pName : publisherNames) {
-                // Executing your new aggregate query method here
                 int publisherPublicationsCount = journalService.findPublisherPublications(pName);
 
-                // Bar 1: Total Publisher Volume (Mapped directly to your query)
                 Map<String, Object> bar1 = new HashMap<>();
                 bar1.put("state", pName + " (Publisher)");
                 bar1.put("age", "Total Articles Volume");
                 bar1.put("population", (long) publisherPublicationsCount);
                 groupedBarDataset.add(bar1);
 
-                // Bar 2: Constant Baseline (Keeps chart categories uniform across the UI views)
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", pName + " (Publisher)");
                 bar2.put("age", "Avg Articles/Year");
                 bar2.put("population", 0L);
                 groupedBarDataset.add(bar2);
 
-                // Bar 3: Constant Baseline
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", pName + " (Publisher)");
                 bar3.put("age", "Avg Authors/Article");

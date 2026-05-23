@@ -1,42 +1,107 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <title>Academic Dashboard - Home</title>
+    <meta charset="UTF-8">
+    <title>Data Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { font-family: sans-serif; margin: 40px; background: #f8f9fa; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
-        .card { background: #fdfdfd; border: 1px solid #e2e8f0; padding: 20px; border-radius: 6px; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #3498db; }
-        .card h3 { margin-top: 0; color: #2980b9; }
-        .card p { margin-bottom: 0; font-size: 14px; color: #7f8c8d; }
+        .menu-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
-<body>
+<body class="bg-light">
+
+<div class="bg-dark text-white py-5 mb-5 text-center shadow">
     <div class="container">
-        <h1>Academic Analysis Repository Portal</h1>
-        <p>Welcome! Select an option below to navigate and analyze indexed research publications, venues, and metrics.</p>
-        
-        <div class="menu-grid">
-            <a th:href="@{/listJournals}" class="card">
-                <h3>Journals Browser</h3>
-                <p>Explore indexed academic journals, impact status, rankings, and publication volumes over time.</p>
-            </a>
-            <a th:href="@{/listConferences}" class="card">
-                <h3>Conferences Browser</h3>
-                <p>Browse active conferences, core rankings, and historic proceedings profile histories.</p>
-            </a>
-            <a th:href="@{/listAuthors}" class="card">
-                <h3>Authors Index</h3>
-                <p>Search researcher distribution stats, total article timelines, and publication tracking profiles.</p>
-            </a>
-            <a th:href="@{/listYears}" class="card">
-                <h3>Chronological Index</h3>
-                <p>Analyze annual breakdowns, total publication metrics, and institutional tracking across single years.</p>
-            </a>
-        </div>
+        <h1 class="display-4 fw-bold mb-3">Data Analytics</h1>
+
+        <p class="lead mb-3">Creators:&emsp;Gkelis Vasilis&emsp;&&emsp;Marmagkas Apostolis.</p>
+
+        <p class="small fst-italic text-light opacity-75 mb-0">Working together like the PK and FK.</p>
     </div>
+</div>
+
+<div class="container">
+
+    <h3 class="mb-4 text-secondary border-bottom pb-2">📂 Data Profiles and Reports </h3>
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3">
+            <div class="card h-100 text-center menu-card border-0 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <h4 class="card-title text-primary mb-3">Journals</h4>
+                    <p class="text-muted small">Explore registered journal items, publisher data, and impact rankings matrix.</p>
+                    <a href="/listJournals" class="btn btn-primary w-100 mt-3">Open Directory</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 text-center menu-card border-0 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <h4 class="card-title text-success mb-3">Conferences</h4>
+                    <p class="text-muted small">View global conferences indexes, event names, and core performance ratings.</p>
+                    <a href="/listConferences" class="btn btn-success w-100 mt-3">Open Directory</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 text-center menu-card border-0 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <h4 class="card-title text-danger mb-3">Authors</h4>
+                    <p class="text-muted small">Search the catalog of contributors, bibliographies, and publication metrics profiles.</p>
+                    <a href="/listAuthors" class="btn btn-danger w-100 mt-3">Open Directory</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 text-center menu-card border-0 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <h4 class="card-title text-warning mb-3">Timeline Years</h4>
+                    <p class="text-muted small">Filter publications globally by chronological years and examine output patterns.</p>
+                    <a href="/listYears" class="btn btn-warning w-100 mt-3 text-white">Open Directory</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h3 class="mb-4 text-secondary border-bottom pb-2">📊 Analytical Data Charts</h3>
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-6">
+            <div class="card text-center menu-card border-0 shadow-sm bg-white p-3">
+                <div class="card-body">
+                    <h4 class="card-title text-info mb-2">Line Charts</h4>
+                    <p class="text-muted card-text">Generate time-series line charts tracking document production volume patterns by categories across years.</p>
+                    <a href="/lineCharts" class="btn btn-outline-info px-4 mt-2">Open Workspace</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card text-center menu-card border-0 shadow-sm bg-white p-3">
+                <div class="card-body">
+                    <h4 class="card-title text-info mb-2">Bar Charts</h4>
+                    <p class="text-muted card-text">Compare specific publication records, average articles, and author counts side-by-side using group distribution layouts.</p>
+                    <a href="/groupedBarCharts" class="btn btn-outline-info px-4 mt-2">Open Workspace</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<footer class="text-center py-4 mt-5 text-muted border-top bg-white">
+    <small>&copy; 2026 Marmagkas and Gkelis. All rights reserved.</small>
+</footer>
+
 </body>
 </html>

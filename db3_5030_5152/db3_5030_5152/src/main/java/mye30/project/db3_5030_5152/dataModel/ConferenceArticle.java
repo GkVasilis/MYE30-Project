@@ -42,7 +42,6 @@ public class ConferenceArticle {
     @Column(name = "conference_key")
     private String conference_key;
 
-
     public ConferenceArticle(){}
 
     public ConferenceArticle(int conference_ID,int article_ID,String conference_name,String title,String cdrom,String crossref,String publtype,String url,String pages,String mdate, int published_year,String conference_key){

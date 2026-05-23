@@ -1,176 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <title>Dynamic Line Chart Analytics</title>
-  <style>
-    body { font-family: sans-serif; margin: 30px; background: #fafafa; }
-    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    h1 { color: #2c3e50; font-size: 22px; margin-bottom: 5px; }
-    .subtitle { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
-    #chart-svg-container { width: 100%; overflow-x: auto; margin-top: 15px; }
-    .axis line, .axis path { stroke: #bdc3c7; }
-    .line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
-    .focus-circle { fill: white; stroke-width: 2px; }
-    .tooltip { background: rgba(44, 62, 80, 0.9); color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; pointer-events: none; }
-  </style>
+  <title>Data Analysis Timeline Trends</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<div class="container">
-  <h1>Multi-Series Trend Line Visualizer</h1>
-  <div class="subtitle">Displaying chronological progress parameters grouped by specified search targets.</div>
-
-  <div id="chart-svg-container"></div>
+<body class="container py-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Historical Trend Charts (D3-Mapped Data Array)</h1>
+  <a href="/homeMenu" class="btn btn-secondary">Home Menu</a>
 </div>
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<div class="card mb-4">
+  <div class="card-header bg-dark text-white">Interactive Trend Query Filter Engine</div>
+  <div class="card-body">
+    <form action="/lineCharts" method="get" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Query Entries (Comma Separated)</label>
+        <input type="text" name="journalNames" th:value="${#strings.listJoin(selectedJournals, ',')}" class="form-control" placeholder="Type Journal Names...">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Start Boundary (Min Year)</label>
+        <input type="number" name="minYear" th:value="${minYear}" class="form-control" placeholder="Min Year">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">End Boundary (Max Year)</label>
+        <input type="number" name="maxYear" th:value="${maxYear}" class="form-control" placeholder="Max Year">
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-primary">Generate Analytical Trendline Plot</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card p-3 shadow-sm">
+  <canvas id="timeSeriesChart" style="max-height: 500px;"></canvas>
+</div>
+
 <script th:inline="javascript">
-  // 1. Ingest clean JSON payload directly from our Jackson serialization controller output
-  const rawPayload = [[${chartDataJson}]];
-  const dataset = JSON.parse(rawPayload);
+  // Injecting serialized dataset safely straight out of Thymeleaf Model attribute engine
+  const rawJsonData = /*[[${chartDataJson}]]*/ '[]';
+  const parsedDataset = JSON.parse(rawJsonData);
 
-  console.log("Processed Dashboard Rows Loaded:", dataset);
+  // Transform flat object data mappings into segmented distinct label array lists
+  const groups = {};
+  const uniqueYearsSet = new Set();
 
-  if (dataset && dataset.length > 0) {
-    generateMultiLineChart(dataset);
-  } else {
-    document.getElementById("chart-svg-container").innerHTML =
-            "<p style='color: #e74c3c; font-weight: bold;'>No matching historical publication matrix records found within parameters.</p>";
-  }
+  parsedDataset.forEach(item => {
+    if(!groups[item.name]) groups[item.name] = [];
+    groups[item.name].push({ x: item.years, y: item.number });
+    uniqueYearsSet.add(item.years);
+  });
 
-  function generateMultiLineChart(data) {
-    // Establish visual boundaries
-    const width = 928;
-    const height = 550;
-    const margin = { top: 30, right: 180, bottom: 40, left: 60 };
+  const distinctSortedTimelineLabels = Array.from(uniqueYearsSet).sort((a,b) => a - b);
 
-    // Base Scales (Using scaleLinear because 'years' stores simple sequential integers)
-    const x = d3.scaleLinear()
-            .domain(d3.extent(data, d => d.years))
-            .range([margin.left, width - margin.right]);
+  const configurationsDatasetsArray = Object.keys(groups).map((key, index) => {
+    // Sort data chronological inside the group
+    groups[key].sort((a,b) => a.x - b.x);
 
-    const y = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.number)]).nice()
-            .range([height - margin.bottom, margin.top]);
+    return {
+      label: key,
+      data: groups[key],
+      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+      borderWidth: 2.5,
+      tension: 0.15,
+      borderColor: `hsl(${(index * 135) % 360}, 70%, 50%)`
+    };
+  });
 
-    // Group series colors dynamically
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-    const svg = d3.select("#chart-svg-container")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [0, 0, width, height])
-            .attr("style", "max-width: 100%; height: auto; font: 11px sans-serif;");
-
-    // Horizontal Scale Axis
-    svg.append("g")
-            .attr("transform", `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).ticks(width / 80).tickFormat(d3.format("d")));
-
-    // Vertical Scale Axis
-    svg.append("g")
-            .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).ticks(height / 50))
-            .call(g => g.select(".domain").remove())
-            .call(g => g.append("text")
-                    .attr("x", -margin.left + 10)
-                    .attr("y", 15)
-                    .attr("fill", "currentColor")
-                    .attr("text-anchor", "start")
-                    .style("font-weight", "bold")
-                    .text("↑ Measured Values"));
-
-    // Package pixels into internal D3 structured arrays: [x_pixel, y_pixel, series_name]
-    const points = data.map(d => [x(d.years), y(d.number), d.name]);
-
-    // Subdivide combined array out into distinct trend line objects
-    const seriesGroupings = d3.rollup(points, v => Object.assign(v, { z: v[0][2] }), d => d[2]);
-
-    // Draw line elements
-    const pathGenerator = d3.line();
-    const paths = svg.append("g")
-            .selectAll("path")
-            .data(seriesGroupings.values())
-            .join("path")
-            .attr("class", "line")
-            .attr("stroke", d => colorScale(d.z))
-            .attr("d", pathGenerator);
-
-    // Append floating interaction tracker group
-    const interactionPointer = svg.append("g").attr("display", "none");
-    interactionPointer.append("circle").attr("class", "focus-circle").attr("r", 5).attr("stroke", "#2c3e50");
-
-    const tooltipLabel = interactionPointer.append("g")
-            .attr("transform", "translate(10, -15)");
-
-    tooltipLabel.append("rect")
-            .attr("fill", "rgba(44, 62, 80, 0.9)")
-            .attr("rx", 4)
-            .attr("ry", 4);
-
-    tooltipLabel.append("text")
-            .attr("fill", "white")
-            .attr("x", 8)
-            .attr("y", 15)
-            .style("font-weight", "bold");
-
-    // Overlay pointer-events canvas wrapper tracking mouse sweeps
-    svg.append("rect")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("fill", "none")
-            .attr("pointer-events", "all")
-            .on("pointerenter", () => interactionPointer.attr("display", null))
-            .on("pointerleave", () => {
-              interactionPointer.attr("display", "none");
-              paths.style("opacity", 1).attr("stroke-width", 2.5);
-            })
-            .on("pointermove", event => {
-              const [mouseX, mouseY] = d3.pointer(event);
-
-              // Run lookups finding the absolute closest single pixel value point
-              const targetIdx = d3.leastIndex(data, d => Math.hypot(x(d.years) - mouseX, y(d.number) - mouseY));
-              const item = data[targetIdx];
-
-              interactionPointer.attr("transform", `translate(${x(item.years)},${y(item.number)})`);
-
-              const textContent = `${item.name}: ${item.number} (${item.years})`;
-              const textNode = tooltipLabel.select("text").text(textContent);
-
-              // Auto-adjust bounding backdrop width box matching dynamic string metrics length
-              const bbox = textNode.node().getBBox();
-              tooltipLabel.select("rect")
-                      .attr("width", bbox.width + 16)
-                      .attr("height", bbox.height + 10)
-                      .attr("y", bbox.y - 5);
-
-              // Dim alternative lines to prioritize focus target line
-              paths.style("opacity", d => d.z === item.name ? 1 : 0.15)
-                      .attr("stroke-width", d => d.z === item.name ? 4 : 2.5);
-            });
-
-    // Draw inline Legend Tracker blocks on right margins
-    const legendPanel = svg.append("g")
-            .attr("transform", `translate(${width - margin.right + 25}, ${margin.top})`);
-
-    Array.from(seriesGroupings.keys()).forEach((seriesKey, index) => {
-      const legendRow = legendPanel.append("g")
-              .attr("transform", `translate(0, ${index * 22})`);
-
-      legendRow.append("rect")
-              .attr("width", 14)
-              .attr("height", 14)
-              .attr("fill", colorScale(seriesKey))
-              .attr("rx", 2);
-
-      legendRow.append("text")
-              .attr("x", 22)
-              .attr("y", 11)
-              .text(seriesKey)
-              .style("font-size", "12px");
-    });
-  }
+  // Initialize display configuration layout elements
+  const htmlCanvasContext = document.getElementById('timeSeriesChart').getContext('2d');
+  new Chart(htmlCanvasContext, {
+    type: 'line',
+    data: { datasets: configurationsDatasetsArray },
+    options: {
+      responsive: true,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'Timeline Interval Span (Years)' }, ticks: { stepSize: 1 } },
+        y: { title: { display: true, text: 'Calculated Aggregate Quantities Volume' } }
+      }
+    }
+  });
 </script>
 </body>
 </html>

@@ -1,61 +1,141 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <title>Journal Profile</title>
-  <style>
-    body { font-family: sans-serif; margin: 40px; background: #f8f9fa; color: #2d3748; }
-    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    h1 { color: #1a202c; margin-bottom: 5px; }
-    .meta-tag { background: #e2e8f0; padding: 4px 10px; border-radius: 12px; font-size: 13px; display: inline-block; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 20px; }
-    .stats-card { background: #edf2f7; padding: 20px; border-radius: 6px; }
-    .stats-item { margin-bottom: 15px; font-size: 15px; }
-    .stats-val { font-weight: bold; color: #2b6cb0; font-size: 18px; display: block; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-anchor: start; font-size: 14px; }
-    th { background: #f7fafc; color: #4a5568; }
-  </style>
+  <title>Journal Profile Summary</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-<body>
-<div class="container">
-  <h1 th:text="${journalName}">Journal Name Placeholder</h1>
-  <span class="meta-tag" th:if="${Ranking != null}" th:text="'Core Ranking Status: ' + ${Ranking.rank}">Rank</span>
+<body class="container py-4">
 
-  <div class="grid">
-    <div class="stats-card">
-      <h3>Analytics Overview</h3>
-      <div class="stats-item">
-        <span class="stats-val" th:text="${NumberJournalAuthors}">0</span> Total Unique Contributing Authors
+<div class="mb-4">
+  <h1 th:text="${journalName}">Journal Name</h1>
+  <a href="/listJournals" class="btn btn-secondary mt-2">Back to Journals List</a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-dark text-white">Filter by Year Range</div>
+  <div class="card-body">
+    <form action="/journalProfile" method="get" class="row g-3">
+      <input type="hidden" name="journalName" th:value="${journalName}"/>
+      <div class="col-md-4">
+        <label class="form-label">Min Year</label>
+        <input type="number" name="minYear" th:value="${minYear}" class="form-control" placeholder="e.g. 2010">
       </div>
-      <div class="stats-item">
-        <span class="stats-val" th:text="${AvgAuthorsOfJournal}">0</span> Avg Authors mapped per Document
+      <div class="col-md-4">
+        <label class="form-label">Max Year</label>
+        <input type="number" name="maxYear" th:value="${maxYear}" class="form-control" placeholder="e.g. 2026">
       </div>
-      <div class="stats-item">
-        <span class="stats-val" th:text="${AvgArticlesByYear}">0</span> Annual Publication Average Volume
+      <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+        <a th:href="@{/journalProfile(journalName=${journalName})}" class="btn btn-outline-danger">Clear</a>
       </div>
+    </form>
+  </div>
+</div>
+
+<div class="card mb-4" th:if="${Ranking != null}">
+  <div class="card-header bg-primary text-white">Journal Ranking & Metadata Profile</div>
+  <div class="card-body p-0">
+    <table class="table table-striped table-hover mb-0">
+      <thead class="table-dark">
+      <tr>
+        <th>Metadata List</th>
+        <th>Associated Value</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><strong>Journal ID</strong></td>
+        <td th:text="${Ranking.journal_ID}">Journal ID</td>
+      </tr>
+      <tr>
+        <td><strong>Journal Rank</strong></td>
+        <td th:text="${Ranking.rank}">Rank</td>
+      </tr>
+      <tr th:if="${Ranking.title != null and !#strings.isEmpty(Ranking.title)}">
+        <td><strong>Journal Title</strong></td>
+        <td th:text="${Ranking.title}">Title</td>
+      </tr>
+      <tr th:if="${Ranking.bestSubjectArea != null and !#strings.isEmpty(Ranking.bestSubjectArea)}">
+        <td><strong>Best Subject Area</strong></td>
+        <td th:text="${Ranking.bestSubjectArea}">Best Subject Area</td>
+      </tr>
+      <tr th:if="${Ranking.bestSubjectRank != null and !#strings.isEmpty(Ranking.bestSubjectRank)}">
+        <td><strong>Best Subject Rank</strong></td>
+        <td th:text="${Ranking.bestSubjectRank}">Best Subject Rank</td>
+      </tr>
+      <tr th:if="${Ranking.country != null and !#strings.isEmpty(Ranking.country)}">
+        <td><strong>Country</strong></td>
+        <td th:text="${Ranking.country}">Country</td>
+      </tr>
+      <tr th:if="${Ranking.bestCategories != null and !#strings.isEmpty(Ranking.bestCategories)}">
+        <td><strong>Best Categories</strong></td>
+        <td th:text="${Ranking.bestCategories}">Best Categories</td>
+      </tr>
+      <tr th:if="${Ranking.journal_language != null and !#strings.isEmpty(Ranking.journal_language)}">
+        <td><strong>Journal Language</strong></td>
+        <td th:text="${Ranking.journal_language}">Journal Language</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card text-center bg-primary text-white py-3">
+      <h5>Total Authors</h5>
+      <h2 th:text="${NumberJournalAuthors != null} ? ${NumberJournalAuthors} : '0'">0</h2>
     </div>
-
-    <div>
-      <h3>Recent Catalogued Articles</h3>
-      <table>
-        <thead>
-        <tr>
-          <th>Article ID</th>
-          <th>Title Header</th>
-          <th>Publication Year</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="article : ${Articles}">
-          <td th:text="${article.article_ID}">ID</td>
-          <td th:text="${article.title}" style="font-weight: 500;">Title</td>
-          <td th:text="${article.published_year}">2026</td>
-        </tr>
-        </tbody>
-      </table>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-center bg-primary text-white py-3">
+      <h5>Average Authors/Article</h5>
+      <h2 th:text="${AvgAuthorsOfJournal != null} ? ${#numbers.formatDecimal(AvgAuthorsOfJournal, 1, 2)} : '0.00'">0.00</h2>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-center bg-primary text-white py-3">
+      <h5>Average Articles/Year</h5>
+      <h2 th:text="${AvgArticlesByYear != null} ? ${#numbers.formatDecimal(AvgArticlesByYear, 1, 2)} : '0.00'">0.00</h2>
     </div>
   </div>
 </div>
+
+<div class="card mb-4" th:if="${minYear == null and maxYear == null}">
+  <div class="card-header bg-dark text-white">Publication Lifespan</div>
+  <div class="card-body">
+    <p><strong>First Published Records (Years):</strong>
+      <span th:text="${YearFirstJournalPublished != null ? YearFirstJournalPublished : 'N/A'}">N/A</span>
+    </p>
+    <p><strong>Most Recent Activity (Years):</strong>
+      <span th:text="${YearLastJournalPublished != null ? YearLastJournalPublished : 'N/A'}">N/A</span>
+    </p>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-dark text-white">Published Articles List</div>
+  <div class="card-body">
+    <table class="table table-striped table-hover mb-0">
+      <thead class="table-primary">
+      <tr>
+        <th>Article ID</th>
+        <th>Title</th>
+        <th>Published Year</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="article : ${Articles}">
+        <td th:text="${article.article_ID}">ID</td>
+        <td th:text="${article.title}">Title</td>
+        <td>
+          <a th:href="@{/yearProfile(yearValue=${article.published_year})}" th:text="${article.published_year}">Year</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 </body>
 </html>
