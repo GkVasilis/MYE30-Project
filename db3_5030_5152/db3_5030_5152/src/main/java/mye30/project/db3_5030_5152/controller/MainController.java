@@ -356,7 +356,7 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("name", jName);
+                                dataPoint.put("name", jName + " (Total Articles)");
                                 dataPoint.put("years", year);
                                 dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
@@ -368,7 +368,6 @@ public class MainController {
         }
         else if (conferenceNames != null && !conferenceNames.isEmpty()) {
             for (String cName : conferenceNames) {
-                // MATCHING INNER LOGIC: Utilizing your pre-aggregated database method!
                 List<Object[]> numOfConferenceArticlesByYear = conferenceService.findNumOfConferenceArticlesByYear(cName);
                 if (numOfConferenceArticlesByYear != null) {
                     for (Object[] row : numOfConferenceArticlesByYear) {
@@ -376,7 +375,7 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("name", cName);
+                                dataPoint.put("name", cName + " (Total Articles)");
                                 dataPoint.put("years", year);
                                 dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
@@ -388,7 +387,6 @@ public class MainController {
         }
         else if (authorNames != null && !authorNames.isEmpty()) {
             for (String aName : authorNames) {
-                // MATCHING INNER LOGIC: Utilizing your pre-aggregated database method!
                 List<Object[]> numOfAuthorArticlesByYear = authorService.findNumArticlesByYear(aName);
                 if (numOfAuthorArticlesByYear != null) {
                     for (Object[] row : numOfAuthorArticlesByYear) {
@@ -396,7 +394,7 @@ public class MainController {
                             int year = ((Number) row[0]).intValue();
                             if (year >= startYear && year <= endYear) {
                                 Map<String, Object> dataPoint = new HashMap<>();
-                                dataPoint.put("name", aName);
+                                dataPoint.put("name", aName + " (Total Articles)");
                                 dataPoint.put("years", year);
                                 dataPoint.put("number", ((Number) row[1]).longValue());
                                 targetList.add(dataPoint);
@@ -514,19 +512,28 @@ public class MainController {
 
     @GetMapping("/groupedBarCharts")
     public String getGroupedBarCharts(
-            @RequestParam(value = "journalNames", required = false) List<String> journalNames,
-            @RequestParam(value = "conferenceNames", required = false) List<String> conferenceNames,
-            @RequestParam(value = "publisherNames", required = false) List<String> publisherNames,
+            @RequestParam(value = "journalNames", required = false) String journalNamesRaw,
+            @RequestParam(value = "conferenceNames", required = false) String conferenceNamesRaw,
+            @RequestParam(value = "publisherNames", required = false) String publisherNamesRaw,
             Model model) {
 
         List<Map<String, Object>> groupedBarDataset = new ArrayList<>();
 
-        if (journalNames != null && !journalNames.isEmpty()) {
+        List<String> journalNames = (journalNamesRaw != null && !journalNamesRaw.trim().isEmpty())
+                ? java.util.Arrays.asList(journalNamesRaw.split("\\s*;\\s*")) : new ArrayList<>();
+
+        List<String> conferenceNames = (conferenceNamesRaw != null && !conferenceNamesRaw.trim().isEmpty())
+                ? java.util.Arrays.asList(conferenceNamesRaw.split("\\s*;\\s*")) : new ArrayList<>();
+
+        List<String> publisherNames = (publisherNamesRaw != null && !publisherNamesRaw.trim().isEmpty())
+                ? java.util.Arrays.asList(publisherNamesRaw.split("\\s*;\\s*")) : new ArrayList<>();
+
+        if (!journalNames.isEmpty()) {
             for (String jName : journalNames) {
                 List<Article> totalArticlesList = journalService.findJournalArticles(jName);
                 long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
                 Double avgArticlesByYear = journalService.findAvgJournalArticles(jName);
-                Double avgAuthorsPerArticle = journalService.findAvgAuthorsByJournal(jName);
+                Double avgAuthorsByYear = journalService.findAvgAuthorsByYear(jName);
 
                 Map<String, Object> bar1 = new HashMap<>();
                 bar1.put("state", jName + " (Journal)");
@@ -536,23 +543,23 @@ public class MainController {
 
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", jName + " (Journal)");
-                bar2.put("age", "Avg Articles/Year");
-                bar2.put("population", (double) avgArticlesByYear);
+                bar2.put("age", "Average Articles/Year");
+                bar2.put("population", (avgArticlesByYear != null) ? avgArticlesByYear : 0.0);
                 groupedBarDataset.add(bar2);
 
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", jName + " (Journal)");
-                bar3.put("age", "Avg Authors/Article");
-                bar3.put("population", (double) avgAuthorsPerArticle);
+                bar3.put("age", "Average Authors/Year");
+                bar3.put("population", (avgAuthorsByYear != null) ? avgAuthorsByYear : 0.0);
                 groupedBarDataset.add(bar3);
             }
         }
-        else if (conferenceNames != null && !conferenceNames.isEmpty()) {
+        else if (!conferenceNames.isEmpty()) {
             for (String cName : conferenceNames) {
                 List<Article> totalArticlesList = conferenceService.findConferenceArticles(cName);
                 long totalArticlesCount = (totalArticlesList != null) ? totalArticlesList.size() : 0;
                 Double avgArticlesByYear = conferenceService.findAvgConferenceArticles(cName);
-                Double avgAuthorsPerArticle = conferenceService.findAvgAuthorsByConference(cName);
+                Double avgAuthorsByYear = conferenceService.findAvgAuthorsByYear(cName);
 
                 Map<String, Object> bar1 = new HashMap<>();
                 bar1.put("state", cName + " (Conference)");
@@ -562,18 +569,18 @@ public class MainController {
 
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", cName + " (Conference)");
-                bar2.put("age", "Avg Articles/Year");
-                bar2.put("population", (double) avgArticlesByYear);
+                bar2.put("age", "Average Articles/Year");
+                bar2.put("population", (avgArticlesByYear != null) ? avgArticlesByYear : 0.0);
                 groupedBarDataset.add(bar2);
 
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", cName + " (Conference)");
-                bar3.put("age", "Avg Authors/Article");
-                bar3.put("population", (double) avgAuthorsPerArticle);
+                bar3.put("age", "Average Authors/Year");
+                bar3.put("population", (avgAuthorsByYear != null) ? avgAuthorsByYear : 0.0);
                 groupedBarDataset.add(bar3);
             }
         }
-        else if (publisherNames != null && !publisherNames.isEmpty()) {
+        else if (!publisherNames.isEmpty()) {
             for (String pName : publisherNames) {
                 int publisherPublicationsCount = journalService.findPublisherPublications(pName);
 
@@ -585,14 +592,14 @@ public class MainController {
 
                 Map<String, Object> bar2 = new HashMap<>();
                 bar2.put("state", pName + " (Publisher)");
-                bar2.put("age", "Avg Articles/Year");
-                bar2.put("population", 0L);
+                bar2.put("age", "Average Articles/Year");
+                bar2.put("population", 0.0);
                 groupedBarDataset.add(bar2);
 
                 Map<String, Object> bar3 = new HashMap<>();
                 bar3.put("state", pName + " (Publisher)");
-                bar3.put("age", "Avg Authors/Article");
-                bar3.put("population", 0L);
+                bar3.put("age", "Average Authors/Year");
+                bar3.put("population", 0.0);
                 groupedBarDataset.add(bar3);
             }
         }

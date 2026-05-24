@@ -49,7 +49,7 @@ public class TSVToDBImporter {
                     preparedStatement.addBatch();
                     recordsInserted++;
 
-                    if (recordsInserted % 20000 == 0) {
+                    if (recordsInserted % 5000 == 0) {
                         try {
                             preparedStatement.executeBatch();
                             connection.commit();
@@ -147,7 +147,7 @@ public class TSVToDBImporter {
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
 
             try (Statement stmt = connection.createStatement()) {
-                System.out.println("Disabling foreign key checks for bulk import...");
+                System.out.println("Disabling foreign key checks for bulk import...\n");
                 stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
                 stmt.execute("SET UNIQUE_CHECKS = 0;");
             }

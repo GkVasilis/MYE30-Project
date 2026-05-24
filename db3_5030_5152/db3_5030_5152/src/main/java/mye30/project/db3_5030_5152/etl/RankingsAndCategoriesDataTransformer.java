@@ -60,7 +60,7 @@ public class RankingsAndCategoriesDataTransformer {
         List<String> linesBestSubjectArea = new ArrayList<>();
 
         Map<String, String> journalMap = new HashMap<>();
-        Map<String, String> journalIssnMap = new HashMap<>(); // NEW: Track by ISSN fallbacks
+        Map<String, String> journalIssnMap = new HashMap<>();
         Map<String, String> conferenceMap = new HashMap<>();
 
         System.out.println("Transforming data...");
@@ -75,7 +75,6 @@ public class RankingsAndCategoriesDataTransformer {
                     String cleanTitle = rawTitle.toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
                     journalMap.put(cleanTitle, array[0].trim());
 
-                    // FIXED: If your DataForJournal file contains an ISSN column, capture it here:
                     if (array.length > 2) {
                         String cleanIssn = array[2].replace("-", "").trim();
                         if (!cleanIssn.isEmpty()) {
@@ -128,14 +127,11 @@ public class RankingsAndCategoriesDataTransformer {
 
                         String journalId = null;
 
-                        // SMART MATCHING DECK FOR JOURNALS:
                         if (journalMap.containsKey(thisTitle)) {
                             journalId = journalMap.get(thisTitle);
                         } else if (!rawIssn.isEmpty() && journalIssnMap.containsKey(rawIssn)) {
-                            // Match by unique ISSN identifier fallback
                             journalId = journalIssnMap.get(rawIssn);
                         } else {
-                            // REVELATION FIX: Partial sub-phrase lookahead lookup check
                             for (Map.Entry<String, String> entry : journalMap.entrySet()) {
                                 if (thisTitle.contains(entry.getKey()) || entry.getKey().contains(thisTitle)) {
                                     journalId = entry.getValue();

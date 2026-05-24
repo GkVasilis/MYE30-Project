@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface YearRepository extends JpaRepository<Article, Integer>{
 
-    @Query("SELECT DISTINCT(art.published_year) FROM Article art ORDER BY art.published_year ASC")
+    @Query("SELECT DISTINCT(art.published_year) FROM Article art WHERE art.published_year >= 1900 ORDER BY art.published_year ASC")
     List<Integer> findAllYears();
 
     @Query("SELECT COUNT(art.article_ID) FROM Article art WHERE art.published_year = ?1")

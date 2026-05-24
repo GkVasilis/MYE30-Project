@@ -72,7 +72,7 @@ public interface JournalRepository extends JpaRepository<Journal, Integer>{
     @Query("SELECT  ja.published_year, COUNT(ja.journal_ID) FROM JournalRanking jr INNER JOIN JournalArticle ja ON jr.journal_ID=ja.journal_ID WHERE jr.bestSubjectArea=?1 GROUP BY ja.published_year")
     List<Object[]> findNumOfJournalByCategory(String categoryName);
 
-    @Query("SELECT j.publisher, COUNT(j.journal_ID) FROM Journal j WHERE j.publisher=?1 GROUP BY j.publisher")
+    @Query("SELECT COUNT(j.journal_ID) FROM Journal j WHERE j.publisher=?1 GROUP BY j.publisher")
     Integer findPublisherPublications(String publisher);
 
     @Query("SELECT ja.published_year, COUNT(ath.author_ID) * 1.0 / COUNT(DISTINCT ja.article_ID), COUNT (DISTINCT ja.article_ID)FROM JournalArticle ja INNER JOIN Author ath ON ja.article_ID=ath.article_ID WHERE ja.journal_name=?1 GROUP BY ja.published_year")

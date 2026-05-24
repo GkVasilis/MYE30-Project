@@ -7,20 +7,32 @@
 </head>
 <body class="container py-4">
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Comparative Data Distribution (Grouped Metrics)</h1>
-    <a href="/homeMenu" class="btn btn-secondary">Home Menu</a>
+    <h1>Data Bar Charts</h1>
+    <a href="/homeMenu" class="btn btn-secondary">Back to Home Menu</a>
 </div>
 
 <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">Target Entity Comparator Selector Form</div>
+    <div class="card-header bg-dark text-white">Entity Selector Form</div>
     <div class="card-body">
         <form action="/groupedBarCharts" method="get" class="row g-3">
             <div class="col-md-10">
-                <label class="form-label">Target Names (Comma-Separated Array Strings)</label>
-                <input type="text" name="journalNames" th:value="${#strings.listJoin(selectedJournals, ',')}" class="form-control" placeholder="e.g. Journal of Computer Science, Journal of AI">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label mb-0">Target Names</label>
+                    <select id="searchType" class="form-select form-select-sm" style="width: auto; max-height: 31px;">
+                        <option value="journals" th:selected="${selectedJournals != null and !selectedJournals.isEmpty()}">Journals</option>
+                        <option value="conferences" th:selected="${selectedConferences != null and !selectedConferences.isEmpty()}">Conferences</option>
+                        <option value="publishers" th:selected="${selectedPublishers != null and !selectedPublishers.isEmpty()}">Publishers</option>
+                    </select>
+                </div>
+
+                <input type="text" id="dynamicInput" class="form-control" placeholder="Type Names...">
+
+                <input type="hidden" id="journalNamesHidden" name="journalNames" th:value="${#strings.listJoin(selectedJournals, ';')}">
+                <input type="hidden" id="conferenceNamesHidden" name="conferenceNames" th:value="${#strings.listJoin(selectedConferences, ';')}">
+                <input type="hidden" id="publisherNamesHidden" name="publisherNames" th:value="${#strings.listJoin(selectedPublishers, ';')}">
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-success w-100">Draw Metrics Bar Graph</button>
+                <button type="submit" class="btn btn-info w-100">Generate Metrics Bar Graph</button>
             </div>
         </form>
     </div>
@@ -31,14 +43,57 @@
 </div>
 
 <script th:inline="javascript">
+    const searchTypeSelect = document.getElementById('searchType');
+    const dynamicInput = document.getElementById('dynamicInput');
+    const jHidden = document.getElementById('journalNamesHidden');
+    const cHidden = document.getElementById('conferenceNamesHidden');
+    const pHidden = document.getElementById('publisherNamesHidden');
+
+    function updateInputFromHidden() {
+        if (searchTypeSelect.value === 'journals') {
+            dynamicInput.value = jHidden.value;
+            dynamicInput.placeholder = "e.g. Journal of Computer Science";
+        } else if (searchTypeSelect.value === 'conferences') {
+            dynamicInput.value = cHidden.value;
+            dynamicInput.placeholder = "e.g. INFOCOM";
+        } else if (searchTypeSelect.value === 'publishers') {
+            dynamicInput.value = pHidden.value;
+            dynamicInput.placeholder = "e.g. IEEE";
+        }
+    }
+
+    searchTypeSelect.addEventListener('change', () => {
+        jHidden.value = "";
+        cHidden.value = "";
+        pHidden.value = "";
+        updateInputFromHidden();
+    });
+
+    dynamicInput.addEventListener('input', () => {
+        const val = dynamicInput.value;
+        if (searchTypeSelect.value === 'journals') {
+            jHidden.value = val;
+        } else if (searchTypeSelect.value === 'conferences') {
+            cHidden.value = val;
+        } else if (searchTypeSelect.value === 'publishers') {
+            pHidden.value = val;
+        }
+    });
+
+    updateInputFromHidden();
+
     const rawBarJsonString = /*[[${barChartDataJson}]]*/ '[]';
     const barRawDataArray = JSON.parse(rawBarJsonString);
 
-    // Grouping logic for categories
     const distinctEntities = Array.from(new Set(barRawDataArray.map(item => item.state)));
     const distinctMetricTypes = Array.from(new Set(barRawDataArray.map(item => item.age)));
 
-    // Organize into structures mapping parameters out cleanly
+    const colorPalette = [
+        'hsla(210, 75%, 50%, 0.85)',
+        'hsla(140, 65%, 45%, 0.85)',
+        'hsla(25, 85%, 55%, 0.85)'
+    ];
+
     const structureMapDatasets = distinctMetricTypes.map((metricName, colorIdx) => {
         return {
             label: metricName,
@@ -46,7 +101,7 @@
                 const matchedNode = barRawDataArray.find(d => d.state === entityKey && d.age === metricName);
                 return matchedNode ? matchedNode.population : 0;
             }),
-            backgroundColor: `hsla(${(colorIdx * 110) % 360}, 65%, 55%, 0.85)`
+            backgroundColor: colorPalette[colorIdx % colorPalette.length]
         };
     });
 
@@ -59,9 +114,14 @@
         },
         options: {
             responsive: true,
-            plugins: { legend: { position: 'top' } },
+            plugins: {
+                legend: { position: 'top' }
+            },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Metric Scaling Axis Units' } }
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Metric Quantities Scale' }
+                }
             }
         }
     });
