@@ -168,25 +168,29 @@ public class RankingsAndCategoriesDataTransformer {
                 if (linePieces.length > 4 && linePieces[0] != null && linePieces[1] != null) {
                     String confIdx = linePieces[0].trim();
                     String rawTitle = linePieces[1].trim();
-                    String acronym = (linePieces.length > 2) ? linePieces[2].trim() : "";
+                    String acronym = (linePieces.length > 2) ? linePieces[2].trim() : "Unranked";
                     String rank = (linePieces.length > 4) ? linePieces[4].trim() : "Unranked";
                     String fieldOfResearch = (linePieces.length > 6) ? linePieces[6].trim() : "0000";
 
                     if (!confIdx.isEmpty() && !rawTitle.isEmpty()) {
                         ///  Compare Titles   ///////////
                         String thisTitle = rawTitle.toLowerCase().replaceAll("\\b(the|a|an)\\b", "").replaceAll("\\p{Punct}", "").trim();
-                        String cleanAcronym = acronym.toLowerCase().trim();
+
 
                         String conferenceId = null;
 
                         if (conferenceMap.containsKey(thisTitle)) {
                             conferenceId = conferenceMap.get(thisTitle);
-                        } else if (!cleanAcronym.isEmpty() && conferenceMap.containsKey(cleanAcronym)) {
-                            conferenceId = conferenceMap.get(cleanAcronym);
+                        }
+                        else {
+                            String cleanAcronym = acronym.toLowerCase().trim();
+                            if (conferenceMap.containsKey(cleanAcronym)) {
+                                conferenceId = conferenceMap.get(cleanAcronym);
+                            }
                         }
 
                         if (conferenceId != null) {
-                            linesConferenceRankings.add(conferenceId + "\t" + rank + "\t" + rawTitle + "\t" + acronym + "\t" + fieldOfResearch); // TODO primaryFoR
+                            linesConferenceRankings.add(conferenceId + "\t" + confIdx + "\t" + rawTitle + "\t" + rank + "\t" + fieldOfResearch); // TODO primaryFoR
                         }
                         ///    ////////////
                     }
