@@ -49,7 +49,7 @@ public class TSVToDBImporter {
                     preparedStatement.addBatch();
                     recordsInserted++;
 
-                    if (recordsInserted % 5000 == 0) {
+                    if (recordsInserted % 20000 == 0) {
                         try {
                             preparedStatement.executeBatch();
                             connection.commit();

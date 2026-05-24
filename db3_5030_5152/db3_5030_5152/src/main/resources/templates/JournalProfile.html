@@ -6,9 +6,13 @@
 </head>
 <body class="container py-4">
 
-<div class="mb-4">
-  <h1 th:text="${journalName}">Journal Name</h1>
-  <a href="/listJournals" class="btn btn-secondary mt-2">Back to Journals List</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 th:text="${journalName}" class="mb-0">Journal Name</h1>
+
+  <div class="d-inline-flex gap-2 mt-2">
+    <a href="/listJournals" class="btn btn-secondary">Back to Journals List</a>
+    <a href="/homeMenu" class="btn btn-secondary">Back to Home Menu</a>
+  </div>
 </div>
 
 <div class="card mb-4">

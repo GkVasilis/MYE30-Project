@@ -20,8 +20,7 @@ CREATE TABLE authors
     article_ID  INT          NOT NULL,
     title       VARCHAR(255) NOT NULL,
     PRIMARY KEY (author_ID, article_ID),
-    /*title       TEXT NOT NULL,
-    PRIMARY KEY (author_ID, author_name, article_ID),*/
+    KEY idx_authors_article (article_ID),
     FOREIGN KEY (article_ID)
     REFERENCES articles(article_ID)
     ON DELETE CASCADE ON UPDATE CASCADE
