@@ -115,7 +115,7 @@ public class TSVToDBImporter {
     public static void main(String[] args) {
         String projectRoot = System.getProperty("user.dir");
 
-        String path = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator;
+        String path = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */+ "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator;
 
         String[] csvFile = {
                 "DataForJournal.tsv",

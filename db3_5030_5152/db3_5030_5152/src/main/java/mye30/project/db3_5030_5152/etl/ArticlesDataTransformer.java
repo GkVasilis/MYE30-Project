@@ -14,12 +14,12 @@ public class ArticlesDataTransformer {
 
         String projectRoot = System.getProperty("user.dir");
 
-        String inputCsvFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
-        String inputCsvFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForConferenceArticles.tsv";
-        String outputCSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Journal_Articles_Data.tsv";
-        String outputCSVFile2 = projectRoot + File.separator+ "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Conference_Articles_Data.tsv";
-        String outputCSVFile3 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Articles_Data.tsv";
-        String outputTSVFile4 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Authors_Data.tsv";
+        String inputCsvFile1 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
+        String inputCsvFile2 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForConferenceArticles.tsv";
+        String outputCSVFile1 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Journal_Articles_Data.tsv";
+        String outputCSVFile2 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Conference_Articles_Data.tsv";
+        String outputCSVFile3 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Articles_Data.tsv";
+        String outputTSVFile4 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "Authors_Data.tsv";
 
         String line;
         int article_ID = 1;

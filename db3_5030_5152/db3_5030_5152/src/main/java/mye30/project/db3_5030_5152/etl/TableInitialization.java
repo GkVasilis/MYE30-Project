@@ -48,10 +48,10 @@ public class TableInitialization {
 
         System.out.println("Initializing DataBase tables...");
         String projectRoot = System.getProperty("user.dir");
-        executeScript(jdbcUrl, username, password, projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "Drop_tables.sql");
-        executeScript(jdbcUrl, username, password, projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "Article_table.sql");
-        executeScript(jdbcUrl, username, password, projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "PK_tables.sql");
-        executeScript(jdbcUrl, username, password, projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "FK_tables.sql");
+        executeScript(jdbcUrl, username, password, projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "Drop_tables.sql");
+        executeScript(jdbcUrl, username, password, projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "Article_table.sql");
+        executeScript(jdbcUrl, username, password, projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "PK_tables.sql");
+        executeScript(jdbcUrl, username, password, projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sql_scripts" + File.separator + "FK_tables.sql");
 
         System.out.println("Table script executing complete.");
     }

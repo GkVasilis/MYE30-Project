@@ -10,9 +10,9 @@ public class JournalDataTransformer {
 
         String projectRoot = System.getProperty("user.dir");
 
-        String inputCsvFile = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "input_article.csv";
-        String outputCSVFile1 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForJournal.tsv";
-        String outputCSVFile2 = projectRoot + File.separator + "db3_5030_5152" + File.separator + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
+        String inputCsvFile = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "input_article.csv";
+        String outputCSVFile1 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "DataForJournal.tsv";
+        String outputCSVFile2 = projectRoot + File.separator /*+ "db3_5030_5152" + File.separator */ + "db3_5030_5152" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "transformed_data" + File.separator + "TempDataForJournalArticles.tsv";
         String line;
         List<String> lines = new ArrayList<>();
 

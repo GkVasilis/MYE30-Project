@@ -79,7 +79,7 @@ public class BackupDBExtractor {
     public static void main(String[] args) {
         String projectRoot = System.getProperty("user.dir");
         String backupFilePath = projectRoot + File.separator
-                + "db3_5030_5152" + File.separator
+                /*+ "db3_5030_5152" + File.separator*/
                 + "db3_5030_5152" + File.separator
                 + "src" + File.separator
                 + "main" + File.separator
